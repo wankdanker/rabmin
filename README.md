@@ -76,6 +76,8 @@ curl -H "Authorization: Bearer rm_..." http://localhost:8080/api/v1/clusters/pro
 - Maintenance as a workflow: pre-checks, drain, upgrade, revive, node by node.
 - An API plane: every UI action is a documented API operation.
 
+Next up is phase 2: vhosts, exchanges, queues, bindings, users, permissions, policies and definitions. Every planned item is a [GitHub issue](https://github.com/wankdanker/rabmin/issues?q=is%3Aissue+is%3Aopen+label%3Aroadmap); [ROADMAP.md](ROADMAP.md) has the overview.
+
 ## Install
 
 **Docker**
