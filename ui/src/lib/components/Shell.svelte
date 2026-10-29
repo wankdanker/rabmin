@@ -52,14 +52,38 @@
 	});
 
 
-	type Item = { href: string; label: string; icon: IconName; exact?: boolean };
-	const clusterItems = (id: string): Item[] => [
-		{ href: `/clusters/${id}`, label: 'Overview', icon: 'dashboard', exact: true },
-		{ href: `/clusters/${id}/nodes`, label: 'Nodes', icon: 'server' },
-		{ href: `/clusters/${id}/health`, label: 'Health', icon: 'heart' },
-		{ href: `/clusters/${id}/connections`, label: 'Connections', icon: 'plug' },
-		{ href: `/clusters/${id}/channels`, label: 'Channels', icon: 'layers' },
-		{ href: `/clusters/${id}/consumers`, label: 'Consumers', icon: 'inbox' }
+	type Item = { href: string; label: string; icon: IconName; exact?: boolean; admin?: boolean };
+	const clusterGroups = (id: string): { label: string; items: Item[] }[] => [
+		{
+			label: 'Monitor',
+			items: [
+				{ href: `/clusters/${id}`, label: 'Overview', icon: 'dashboard', exact: true },
+				{ href: `/clusters/${id}/nodes`, label: 'Nodes', icon: 'server' },
+				{ href: `/clusters/${id}/health`, label: 'Health', icon: 'heart' },
+				{ href: `/clusters/${id}/connections`, label: 'Connections', icon: 'plug' },
+				{ href: `/clusters/${id}/channels`, label: 'Channels', icon: 'layers' },
+				{ href: `/clusters/${id}/consumers`, label: 'Consumers', icon: 'inbox' }
+			]
+		},
+		{
+			label: 'Objects',
+			items: [
+				{ href: `/clusters/${id}/vhosts`, label: 'Virtual hosts', icon: 'box' },
+				{ href: `/clusters/${id}/exchanges`, label: 'Exchanges', icon: 'swap' },
+				{ href: `/clusters/${id}/queues`, label: 'Queues & streams', icon: 'queue' }
+			]
+		},
+		{
+			label: 'Admin',
+			items: [
+				{ href: `/clusters/${id}/users`, label: 'Users & permissions', icon: 'users' },
+				{ href: `/clusters/${id}/policies`, label: 'Policies', icon: 'filter' },
+				{ href: `/clusters/${id}/parameters`, label: 'Parameters', icon: 'kv' },
+				{ href: `/clusters/${id}/definitions`, label: 'Definitions', icon: 'download', admin: true },
+				{ href: `/clusters/${id}/feature-flags`, label: 'Feature flags', icon: 'zap' },
+				{ href: `/clusters/${id}/settings`, label: 'Settings', icon: 'settings' }
+			]
+		}
 	];
 </script>
 
@@ -88,10 +112,12 @@
 				</a>
 				{#if open}
 					<div class="sub">
-						{#each clusterItems(c.id) as it}
-							<a href={it.href} class="item" class:active={active(it.href, it.exact)}><Icon name={it.icon} />{it.label}</a>
+						{#each clusterGroups(c.id) as g}
+							<div class="grp">{g.label}</div>
+							{#each g.items.filter((it) => !it.admin || can('admin')) as it}
+								<a href={it.href} class="item" class:active={active(it.href, it.exact)}><Icon name={it.icon} />{it.label}</a>
+							{/each}
 						{/each}
-						<a href="/clusters/{c.id}/settings" class="item" class:active={active(`/clusters/${c.id}/settings`)}><Icon name="settings" />Settings</a>
 					</div>
 				{/if}
 			{:else}
@@ -217,6 +243,14 @@
 	.sub .item {
 		font-size: 13px;
 		padding: 5px 8px;
+	}
+	.grp {
+		font-size: 10.5px;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: var(--text-3);
+		padding: 8px 8px 2px;
+		font-weight: 600;
 	}
 	.none {
 		padding: 4px 8px;

@@ -47,6 +47,17 @@ rabmin is one Go binary with the UI built in, the sibling of [natsmin](https://g
 - Close a connection with a reason sent to the client, or close many by user, vhost or client name behind type-to-confirm
 - Channels with prefetch, unacked and unconfirmed counts and saturation flagged; consumers with ack mode, prefetch and single-active-consumer state
 
+**Manage objects**
+- Virtual hosts with description, tags, default queue type, connection and queue limits, deletion protection, and restarting a vhost that failed on a node
+- Exchanges with their bindings in both directions; add and remove bindings, including to other exchanges
+- Queues and streams filtered by vhost, name, regex, type, state or policy, with a column chooser; create classic, quorum and stream queues with helpers for every argument; purge and delete behind type-to-confirm, optionally only if empty or unused
+- Publish a message to any exchange or straight to a queue, with properties, headers and a base64 payload, and see whether it was routed
+- RabbitMQ users with tags, permissions, topic permissions and user limits; changing tags keeps the password
+- Policies and operator policies with a form or JSON editor and a live preview of which queues and exchanges a pattern matches and whether the policy would win
+- Vhost and global parameters (federation upstreams, shovels and others; passwords in URIs are masked) and cluster tags
+- Definitions export for the cluster or one vhost, and import that shows what a file would add, change or skip as a conflict, then imports only what you pick
+- Feature flags with one-click enabling of stable flags, and deprecated features flagged when in use
+
 **Built for teams**
 - Users with viewer, operator and admin roles; API tokens limited to a role and expiry
 - An audit log of every change, through the UI or the API
@@ -66,6 +77,9 @@ curl -H "Authorization: Bearer rm_..." http://localhost:8080/api/v1/clusters/pro
 |---|---|
 | ![Clusters](docs/screenshots/fleet.png) **Clusters:** every cluster at a glance | ![Health](docs/screenshots/health.png) **Health matrix:** RabbitMQ's checks on every node |
 | ![Connections](docs/screenshots/connections.png) **Connections:** filter, inspect and close | ![Node](docs/screenshots/node.png) **Node detail:** memory breakdown, checks and plugins |
+| ![Queues](docs/screenshots/queues.png) **Queues and streams:** filter, choose columns, create | ![Queue](docs/screenshots/queue.png) **Queue detail:** members, consumers, bindings, publish |
+| ![Exchange](docs/screenshots/exchange.png) **Exchange:** bindings both ways and publish | ![Policy](docs/screenshots/policy-edit.png) **Policies:** see what a pattern matches before saving |
+| ![Definitions](docs/screenshots/definitions.png) **Definitions:** review an import before running it | ![Users](docs/screenshots/users.png) **RabbitMQ users:** tags, vhosts and limits |
 
 ## Where it is going
 
