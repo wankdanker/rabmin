@@ -1,0 +1,91 @@
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+version: 2
+project_name: rabmin
+
+before:
+  hooks:
+    - go mod download
+    # The UI is embedded into the binary, so build it once before Go.
+    - sh -c "cd ui && pnpm install --frozen-lockfile && pnpm run build"
+
+builds:
+  - id: rabmin
+    main: ./cmd/rabmin
+    binary: rabmin
+    env: [CGO_ENABLED=0]
+    flags: [-trimpath]
+    ldflags:
+      - -s -w
+      - -X github.com/wankdanker/rabmin/internal/version.Version={{ .Version }}
+      - -X github.com/wankdanker/rabmin/internal/version.Commit={{ .ShortCommit }}
+    goos: [linux, darwin, windows, freebsd]
+    goarch: [amd64, arm64, arm]
+    goarm: ["7"]
+    ignore:
+      - { goos: darwin, goarch: arm }
+      - { goos: windows, goarch: arm }
+      - { goos: freebsd, goarch: arm }
+  - id: rabmin-devcluster
+    main: ./cmd/rabmin-devcluster
+    binary: rabmin-devcluster
+    env: [CGO_ENABLED=0]
+    flags: [-trimpath]
+    ldflags: [-s -w]
+    goos: [linux, darwin, windows]
+    goarch: [amd64, arm64]
+
+archives:
+  - id: rabmin
+    ids: [rabmin]
+    name_template: "rabmin_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}"
+    formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    files: [LICENSE, README.md]
+  - id: devcluster
+    ids: [rabmin-devcluster]
+    name_template: "rabmin-devcluster_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    files: [LICENSE]
+
+checksum:
+  name_template: checksums.txt
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  sort: asc
+  use: github
+  groups:
+    - title: Features
+      regexp: '(?i)^.*\b(add|new|support)\b'
+      order: 0
+    - title: Fixes
+      regexp: '(?i)^.*\b(fix|correct|handle)\b'
+      order: 1
+    - title: Other changes
+      order: 999
+  filters:
+    exclude:
+      - '^Merge '
+      - '(?i)^(docs|chore|ci)(\(.*\))?:'
+
+release:
+  github:
+    owner: wankdanker
+    name: rabmin
+  draft: false
+  prerelease: auto
+  footer: |
+    ## Docker
+
+    ```bash
+    docker run -p 8080:8080 -v rabmin:/data ghcr.io/wankdanker/rabmin:{{ .Version }}
+    ```
+
+    Images are published for `linux/amd64` and `linux/arm64`.

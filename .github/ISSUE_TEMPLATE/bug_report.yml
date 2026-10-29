@@ -1,0 +1,33 @@
+name: Bug report
+description: Something in rabmin does not work as expected
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What did you do, what did you expect, and what happened instead?
+    validations: { required: true }
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Register a cluster with ...
+        2. Open ...
+  - type: input
+    id: version
+    attributes:
+      label: rabmin version
+      description: Shown on the login page, or `rabmin version`
+    validations: { required: true }
+  - type: input
+    id: rabbitmq
+    attributes:
+      label: RabbitMQ version and topology
+      placeholder: 4.1.4, 3-node cluster, OAuth2 for the management API
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or screenshots
+      render: shell

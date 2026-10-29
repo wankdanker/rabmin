@@ -1,0 +1,20 @@
+name: Feature request
+description: Suggest something rabmin should do
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What are you trying to do that rabmin makes hard or impossible?
+    validations: { required: true }
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: How would you like it to work? API, UI, or both.
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: How do you do this today (management UI, rabbitmqctl, rabbitmqadmin, scripts)?

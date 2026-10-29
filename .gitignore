@@ -1,0 +1,13 @@
+/data/
+/.devcluster/
+/bin/
+/dist/
+web/dist/*
+!web/dist/.gitkeep
+ui/node_modules/
+ui/.svelte-kit/
+ui/build/
+*.db
+*.db-wal
+*.db-shm
+.DS_Store

@@ -1,0 +1,36 @@
+# A 3-node RabbitMQ 4.x cluster and rabmin.
+#   docker compose up --build
+# Open http://localhost:8080 (admin / changeme), then add a cluster with
+#   management URLs http://rabbit-1:15672, http://rabbit-2:15672, http://rabbit-3:15672,
+#   Prometheus URLs http://rabbit-1:15692 (and so on), user admin / admin.
+x-rabbit: &rabbit
+  image: rabbitmq:4-management
+  environment:
+    RABBITMQ_ERLANG_COOKIE: rabmin-compose-cookie
+  volumes:
+    - ./dev/docker/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+    - ./dev/docker/enabled_plugins:/etc/rabbitmq/enabled_plugins:ro
+
+services:
+  rabbit-1:
+    <<: *rabbit
+    hostname: rabbit-1
+    ports: ["5672:5672", "15672:15672"]
+  rabbit-2:
+    <<: *rabbit
+    hostname: rabbit-2
+  rabbit-3:
+    <<: *rabbit
+    hostname: rabbit-3
+  rabmin:
+    build: .
+    environment:
+      RABMIN_ADMIN_USER: admin
+      RABMIN_ADMIN_PASSWORD: changeme
+    volumes:
+      - rabmin:/data
+    ports: ["8080:8080"]
+    depends_on: [rabbit-1, rabbit-2, rabbit-3]
+
+volumes:
+  rabmin:

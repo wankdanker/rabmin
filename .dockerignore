@@ -1,0 +1,8 @@
+bin
+data
+.devcluster
+ui/node_modules
+ui/.svelte-kit
+web/dist/_app
+web/dist/index.html
+.git

@@ -1,0 +1,20 @@
+version: 2
+updates:
+  - package-ecosystem: gomod
+    directory: /
+    schedule: { interval: weekly }
+    groups:
+      rabbitmq: { patterns: ["github.com/rabbitmq/*"] }
+      go-deps: { patterns: ["*"], exclude-patterns: ["github.com/rabbitmq/*"] }
+  - package-ecosystem: npm
+    directory: /ui
+    schedule: { interval: weekly }
+    groups:
+      svelte: { patterns: ["svelte", "svelte-check", "@sveltejs/*", "vite"] }
+      ui-deps: { patterns: ["*"] }
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: { interval: monthly }
+  - package-ecosystem: docker
+    directory: /
+    schedule: { interval: monthly }
