@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 # Build stages run on the build machine's platform and cross-compile, so
 # multi-arch images do not need emulation.
-FROM --platform=$BUILDPLATFORM node:22-alpine AS ui
+FROM --platform=$BUILDPLATFORM node:25-alpine AS ui
 WORKDIR /src/ui
 RUN corepack enable
 COPY ui/package.json ui/pnpm-lock.yaml ./
