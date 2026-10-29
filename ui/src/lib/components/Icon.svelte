@@ -42,7 +42,12 @@
 		menu: 'M3 6h18M3 12h18M3 18h18',
 		filter: 'M22 3H2l8 9.5V19l4 2v-8.5z',
 		globe: 'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20',
-		zap: 'M13 2 3 14h9l-1 8 10-12h-9z'
+		zap: 'M13 2 3 14h9l-1 8 10-12h-9z',
+		heart: 'M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z',
+		layers: 'M12 2 2 7l10 5 10-5zM2 17l10 5 10-5M2 12l10 5 10-5',
+		inbox: 'M22 12h-6l-2 3h-4l-2-3H2M5.5 5.1 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.5-6.9A2 2 0 0 0 16.8 4H7.2a2 2 0 0 0-1.7 1.1z',
+		queue: 'M3 5h18v4H3zM3 10h18v4H3zM3 15h18v4H3z',
+		cpu: 'M6 6h12v12H6zM9 9h6v6H9zM9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4'
 	};
 	export type IconName = keyof typeof paths;
 </script>

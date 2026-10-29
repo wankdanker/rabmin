@@ -19,6 +19,7 @@ import (
 
 	"github.com/wankdanker/rabmin/internal/api"
 	"github.com/wankdanker/rabmin/internal/auth"
+	"github.com/wankdanker/rabmin/internal/rabbitx"
 	"github.com/wankdanker/rabmin/internal/secret"
 	"github.com/wankdanker/rabmin/internal/store"
 	"github.com/wankdanker/rabmin/internal/version"
@@ -104,11 +105,17 @@ func run(log *slog.Logger, addr, dataDir string, poll time.Duration, secure, all
 		return err
 	}
 
+	mgr := rabbitx.NewManager(st, rabbitx.Options{PollInterval: poll}, log)
+	if err := mgr.Start(ctx); err != nil {
+		return err
+	}
+	defer mgr.Stop()
+
 	ui := web.FS()
 	if ui == nil {
 		log.Warn("UI not built; serving the API only (run `make ui`)")
 	}
-	h := api.New(api.Config{SecureCookies: secure, AllowSetup: allowSetup}, st, ui, log)
+	h := api.New(api.Config{SecureCookies: secure, AllowSetup: allowSetup}, st, mgr, ui, log)
 	srv := &http.Server{Addr: addr, Handler: h, ReadHeaderTimeout: 10 * time.Second}
 
 	go func() {
@@ -171,7 +178,7 @@ func bootstrapAdmin(ctx context.Context, st *store.Store, log *slog.Logger) erro
 }
 
 func dumpOpenAPI() {
-	h := api.New(api.Config{}, nil, nil, nil)
+	h := api.New(api.Config{}, nil, nil, nil, nil)
 	rec := httptest.NewRecorder()
 	h.ServeHTTP(rec, httptest.NewRequest(http.MethodGet, "/api/openapi.json", nil))
 	var v any

@@ -36,8 +36,9 @@ func TestClusterAndSeed(t *testing.T) {
 		t.Fatal(err)
 	}
 	var shovels []struct {
-		Name  string `json:"name"`
-		State string `json:"state"`
+		Name      string `json:"name"`
+		State     string `json:"state"`
+		Forwarded int    `json:"forwarded"`
 	}
 	deadline := time.Now().Add(30 * time.Second)
 	for time.Now().Before(deadline) {
@@ -49,4 +50,18 @@ func TestClusterAndSeed(t *testing.T) {
 	if len(shovels) != 1 || shovels[0].State != "running" {
 		t.Fatalf("shovel to west is not running: %+v", shovels)
 	}
+	// "running" alone proves little: a shovel on a source in the wrong vhost
+	// runs without forwarding anything. Push a message through it.
+	if err := env.API(ctx, env.Nodes[0], http.MethodPost, "/api/exchanges/shop/amq.default/publish",
+		map[string]any{"routing_key": "shovel.outbox", "payload": "ping", "payload_encoding": "string", "properties": map[string]any{}}, nil); err != nil {
+		t.Fatal(err)
+	}
+	deadline = time.Now().Add(30 * time.Second)
+	for time.Now().Before(deadline) {
+		if err := env.API(ctx, env.Nodes[0], http.MethodGet, "/api/shovels", nil, &shovels); err == nil && len(shovels) == 1 && shovels[0].Forwarded > 0 {
+			return
+		}
+		time.Sleep(time.Second)
+	}
+	t.Fatalf("shovel did not forward: %+v", shovels)
 }

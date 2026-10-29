@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { api, unwrap, errMsg } from '$lib/api/client';
 	import { session } from '$lib/session.svelte';
+	import { refreshClusters } from '$lib/clusters.svelte';
 	import AuthCard from '$lib/components/AuthCard.svelte';
 
 	let username = $state('admin');
@@ -20,7 +21,8 @@
 		error = null;
 		try {
 			session.me = await unwrap(api.POST('/v1/setup', { body: { username, password } }));
-			await goto('/systems/new');
+			await refreshClusters();
+			await goto('/clusters/new');
 		} catch (err) {
 			error = errMsg(err);
 		} finally {

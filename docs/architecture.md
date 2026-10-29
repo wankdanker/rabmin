@@ -21,7 +21,7 @@ browser ──HTTP/SSE──▶ rabmin (one Go binary)
 | `cmd/rabmin` | The server. Flags/env, admin bootstrap, `rabmin openapi`. |
 | `cmd/rabmin-devcluster` | RabbitMQ clusters in Docker for development, with optional demo topology and traffic. |
 | `internal/api` | HTTP API. One file per area; every route is registered with `reg()` so it gets a role requirement, OpenAPI docs and auditing. |
-| `internal/rabbitx` | RabbitMQ side: the management API client, Prometheus parsing, the poller and snapshots (from phase 1). |
+| `internal/rabbitx` | RabbitMQ side: the management API client, Prometheus parsing, the poller and snapshots. |
 | `internal/store` | SQLite persistence (pure Go driver, no CGO). Credentials and TLS keys are sealed with `internal/secret` before they are written. |
 | `internal/devcluster` | Starts RabbitMQ containers through the docker CLI; used by the dev command and by integration tests. |
 | `web` | `go:embed` of the built UI. |
@@ -35,6 +35,19 @@ browser ──HTTP/SSE──▶ rabmin (one Go binary)
 | Prometheus (`rabbitmq_prometheus`) | Metrics, also when the management stats database is disabled. |
 | AMQP and stream clients | Publishing, safe browsing, moving messages (later phases). |
 | Optional executor (SSH, kubectl, agent) | CLI-only operations such as maintenance mode (later phases). |
+
+## Monitoring
+
+For each registered cluster the manager polls every `RABMIN_POLL_INTERVAL`, in parallel:
+
+- `/api/overview`, `/api/nodes`, and the 500 deepest queues (`/api/queues?sort=messages`, projected with `columns`) through the management client, which tries the URL that last worked first and fails over to the others on network errors;
+- `/api/overview?columns=node` through every configured URL, to learn which node each URL reaches;
+- RabbitMQ's health checks through every reachable URL, one per node (at most every `3 × poll interval`), forming the node × check matrix;
+- `/metrics` on every Prometheus URL.
+
+`buildSnapshot` combines them into one `Snapshot`: info and versions, totals, rates, nodes, alarms, health, listeners, endpoint status, the deepest and problematic queues, and an attention list. Message rates come from the management stats database; when it is disabled, rabmin computes them from Prometheus counter deltas per node (skipping counter resets). Snapshots go to SSE subscribers (`/api/v1/clusters/{id}/events`) and an in-memory history used for the charts.
+
+Lists (connections, channels, consumers) are read on demand. RabbitMQ's own list filters only match object names, so rabmin fetches the projected list and filters, sorts and pages it itself; list rates use `avg_rate` over a 30 second window, because `rate` in list responses is often 0. See `docs/rabbitmq-api-notes.md`.
 
 ## Auth
 

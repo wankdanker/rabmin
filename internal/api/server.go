@@ -12,6 +12,7 @@ import (
 	"github.com/danielgtaylor/huma/v2"
 	"github.com/danielgtaylor/huma/v2/adapters/humago"
 
+	"github.com/wankdanker/rabmin/internal/rabbitx"
 	"github.com/wankdanker/rabmin/internal/store"
 	"github.com/wankdanker/rabmin/internal/version"
 )
@@ -37,6 +38,7 @@ func init() {
 type Server struct {
 	cfg     Config
 	store   *store.Store
+	mgr     *rabbitx.Manager
 	log     *slog.Logger
 	api     huma.API
 	limiter *loginLimiter
@@ -44,11 +46,11 @@ type Server struct {
 
 // New builds the HTTP handler: the API under /api and the UI (if ui is
 // non-nil) everywhere else.
-func New(cfg Config, st *store.Store, ui fs.FS, log *slog.Logger) http.Handler {
+func New(cfg Config, st *store.Store, mgr *rabbitx.Manager, ui fs.FS, log *slog.Logger) http.Handler {
 	if cfg.SessionTTL <= 0 {
 		cfg.SessionTTL = 7 * 24 * time.Hour
 	}
-	s := &Server{cfg: cfg, store: st, log: log, limiter: newLoginLimiter()}
+	s := &Server{cfg: cfg, store: st, mgr: mgr, log: log, limiter: newLoginLimiter()}
 
 	mux := http.NewServeMux()
 	hcfg := huma.DefaultConfig("rabmin", version.Version)
@@ -70,6 +72,8 @@ func New(cfg Config, st *store.Store, ui fs.FS, log *slog.Logger) http.Handler {
 
 	s.registerAuth()
 	s.registerUsers()
+	s.registerClusters()
+	s.registerMonitor()
 	s.registerAudit()
 
 	mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, r *http.Request) {

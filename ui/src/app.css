@@ -564,3 +564,7 @@ table.t .r {
 	color: var(--text);
 	border-bottom-color: var(--accent);
 }
+
+table.t td.r {
+	white-space: nowrap;
+}

@@ -17,11 +17,57 @@
   <a href="LICENSE"><img src="https://img.shields.io/github/license/wankdanker/rabmin" alt="License"></a>
 </p>
 
-> **Status: early development.** This is the project scaffold: users, roles, API tokens, the audit log, the UI shell and the development clusters. Cluster monitoring and management arrive phase by phase; see the [roadmap](ROADMAP.md).
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/overview-dark.png">
+    <img src="docs/screenshots/overview.png" alt="rabmin cluster overview" width="900">
+  </picture>
+</p>
 
-rabmin is one Go binary with the UI built in, the sibling of [natsmin](https://github.com/wankdanker/natsmin). It talks to RabbitMQ through the management HTTP API, the Prometheus endpoint, and AMQP and stream clients. Nothing is installed on your brokers.
+> **Status: early development.** rabmin observes clusters today (phase 1 of the [roadmap](ROADMAP.md)): fleet and cluster overviews, nodes, a health matrix, connections, channels and consumers. Managing queues, exchanges, users and policies comes next.
 
-## Goals
+rabmin is one Go binary with the UI built in, the sibling of [natsmin](https://github.com/wankdanker/natsmin). It talks to RabbitMQ through the management HTTP API and the Prometheus endpoint (and, in later phases, AMQP and stream clients). Nothing is installed on your brokers.
+
+## What it does today
+
+**Many clusters in one place**
+- A fleet page with the health, versions, nodes, connections, queued messages and rates of every registered cluster
+- Register a cluster by its management URLs, ideally one per node: rabmin fails over between them, and a connection test reports the RabbitMQ and Erlang versions, enabled plugins, the user's tags, and which nodes each URL reaches
+
+**See each cluster**
+- Live overview over server-sent events: nodes, connections, channels, queues, consumers, queued messages, every message rate the management UI shows (publish, confirm, deliver with manual and automatic ack, get, get-empty, ack, redeliver, returned and dropped unroutable, disk reads and writes) and churn
+- Rates come from the management statistics database, or from rabmin's own Prometheus counter deltas when the stats database is disabled, as RabbitMQ 4.x encourages
+- An attention list: nodes down, memory and disk alarms, partitions, maintenance mode, mixed versions, failing health checks, unreachable endpoints, quorum queues with members offline, and deep queues nobody consumes
+- Nodes with memory, disk, file descriptors, Erlang processes and uptime; node detail with the memory breakdown, plugins and the raw management object; reset statistics
+- A health matrix that runs RabbitMQ's node-local health checks (`alarms`, `local-alarms`, `virtual-hosts`, `is-in-service`, `ready-to-serve-clients`, `below-node-connection-limit`, `node-is-quorum-critical`, `certificate-expiration`, protocol listeners) through each node's own management URL
+- Listening ports and web contexts; rename the RabbitMQ cluster
+
+**Clients**
+- Connections (AMQP 0-9-1, AMQP 1.0, MQTT, STOMP and direct) filtered by client name, user, vhost, node or protocol, sorted by traffic, with client properties, TLS and negotiated limits; stream protocol connections
+- Close a connection with a reason sent to the client, or close many by user, vhost or client name behind type-to-confirm
+- Channels with prefetch, unacked and unconfirmed counts and saturation flagged; consumers with ack mode, prefetch and single-active-consumer state
+
+**Built for teams**
+- Users with viewer, operator and admin roles; API tokens limited to a role and expiry
+- An audit log of every change, through the UI or the API
+- RabbitMQ credentials and TLS keys are encrypted at rest; extra credential profiles let later features run as less privileged users
+
+**API plane**
+
+Everything the UI does is a documented HTTP API: OpenAPI 3.1 at `/api/openapi.json`, interactive docs at `/api/docs`. The UI is just one client.
+
+```bash
+curl -H "Authorization: Bearer rm_..." http://localhost:8080/api/v1/clusters/prod/connections?q=billing
+```
+
+## Screenshots
+
+| | |
+|---|---|
+| ![Clusters](docs/screenshots/fleet.png) **Clusters:** every cluster at a glance | ![Health](docs/screenshots/health.png) **Health matrix:** RabbitMQ's checks on every node |
+| ![Connections](docs/screenshots/connections.png) **Connections:** filter, inspect and close | ![Node](docs/screenshots/node.png) **Node detail:** memory breakdown, checks and plugins |
+
+## Where it is going
 
 - Everything the built-in management UI does, in a more modern form.
 - Many clusters in one place, with a fleet overview and cross-cluster search.
@@ -29,6 +75,8 @@ rabmin is one Go binary with the UI built in, the sibling of [natsmin](https://g
 - Safe message browsing: streams read non-destructively, and classic and quorum queues browsed with explicit requeue semantics.
 - Maintenance as a workflow: pre-checks, drain, upgrade, revive, node by node.
 - An API plane: every UI action is a documented API operation.
+
+Next up is phase 2: vhosts, exchanges, queues, bindings, users, permissions, policies and definitions. Every planned item is a [GitHub issue](https://github.com/wankdanker/rabmin/issues?q=is%3Aissue+is%3Aopen+label%3Aroadmap); [ROADMAP.md](ROADMAP.md) has the overview.
 
 ## Install
 
@@ -44,7 +92,13 @@ docker run -p 8080:8080 -v rabmin:/data ghcr.io/wankdanker/rabmin
 make ui build && ./bin/rabmin
 ```
 
-Open http://localhost:8080 and create the admin account.
+Open http://localhost:8080, create the admin account, then add a cluster:
+
+- **Management URLs**: `http://host:15672`, one per node if you can.
+- **Credentials**: a RabbitMQ user tagged `monitoring` is enough to observe; `administrator` is needed for changes. OAuth2 bearer tokens work for brokers whose management API uses OAuth2.
+- **Prometheus URLs** (optional): `http://host:15692`, one per node, for rates when the management stats database is disabled.
+
+RabbitMQ 3.13 and later are supported; 4.x is the main target.
 
 ## Try it with local RabbitMQ clusters
 
@@ -54,7 +108,7 @@ Open http://localhost:8080 and create the admin account.
 go run ./cmd/rabmin-devcluster -demo
 ```
 
-Management APIs are on http://localhost:15672 to 15675 (user `admin` / `admin`), Prometheus on 15692 to 15695, AMQP on 5672 to 5675. Stop with ctrl-c, or `go run ./cmd/rabmin-devcluster -down` after an interrupted run.
+Management APIs are on http://localhost:15672 to 15675 (user `admin` / `admin`, or `monitor` / `monitor`), Prometheus on 15692 to 15695, AMQP on 5672 to 5675. Register `east` with the first three management and Prometheus URLs, and `west` with the fourth. Stop with ctrl-c, or `go run ./cmd/rabmin-devcluster -down` after an interrupted run.
 
 Or with Docker Compose (3-node cluster plus rabmin, login `admin` / `changeme`):
 
