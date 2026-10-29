@@ -35,3 +35,4 @@ See `docs/architecture.md`. In short: `cmd/rabmin` (server), `internal/api` (hum
 - Destructive UI actions need a confirm dialog; irreversible ones use type-to-confirm.
 - Every mutating API operation is audited automatically by the auth middleware; add `s.audit(...)` only when extra detail helps.
 - Releases are cut by pushing a `vX.Y.Z` tag; see `RELEASING.md`.
+- Command-line interfaces use [clyops](https://clyops.io) (`github.com/wankdanker/clyops/packages/go`), not the `flag` package. Name each option's variable after its environment variable (`RABMIN_...`) so the environment fallback comes for free, mark secrets with the `secret` rule, and declare effects. This applies to new tools too (the planned CLI in issue #42).

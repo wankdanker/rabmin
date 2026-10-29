@@ -30,14 +30,14 @@ openapi:
 
 # Local RabbitMQ clusters in Docker with demo traffic (3-node east, 1-node west).
 devcluster:
-	go run ./cmd/rabmin-devcluster -demo
+	go run ./cmd/rabmin-devcluster --demo
 
 devcluster-down:
-	go run ./cmd/rabmin-devcluster -down
+	go run ./cmd/rabmin-devcluster --down
 
 # API server on :8080; run `cd ui && pnpm dev` alongside for the UI with hot reload on :5173.
 dev:
-	go run ./cmd/rabmin -data ./data -poll 2s
+	go run ./cmd/rabmin --data ./data --poll 2s
 
 docker:
 	docker build -t rabmin:$(VERSION) .

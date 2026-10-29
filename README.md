@@ -119,10 +119,10 @@ RabbitMQ 3.13 and later are supported; 4.x is the main target.
 `rabmin-devcluster` starts a 3-node RabbitMQ 4.x cluster `east` and a single-node cluster `west` in Docker, joined by a federation link and a shovel, and can seed vhosts, queues of every type, policies and demo traffic.
 
 ```bash
-go run ./cmd/rabmin-devcluster -demo
+go run ./cmd/rabmin-devcluster --demo
 ```
 
-Management APIs are on http://localhost:15672 to 15675 (user `admin` / `admin`, or `monitor` / `monitor`), Prometheus on 15692 to 15695, AMQP on 5672 to 5675. Register `east` with the first three management and Prometheus URLs, and `west` with the fourth. Stop with ctrl-c, or `go run ./cmd/rabmin-devcluster -down` after an interrupted run.
+Management APIs are on http://localhost:15672 to 15675 (user `admin` / `admin`, or `monitor` / `monitor`), Prometheus on 15692 to 15695, AMQP on 5672 to 5675. Register `east` with the first three management and Prometheus URLs, and `west` with the fourth. Stop with ctrl-c, or `go run ./cmd/rabmin-devcluster --down` after an interrupted run.
 
 Or with Docker Compose (3-node cluster plus rabmin, login `admin` / `changeme`):
 
@@ -132,21 +132,21 @@ docker compose up --build
 
 ## Configuration
 
-Flags or environment variables:
+rabmin's command line is built with [clyops](https://clyops.io). Every option can also be set with the environment variable of the same row; the command line wins.
 
-| Variable | Default | |
-|---|---|---|
-| `RABMIN_ADDR` | `:8080` | Listen address |
-| `RABMIN_DATA` | `./data` | Database and secret key directory |
-| `RABMIN_SECRET_KEY` | | Base64 32-byte key for encrypting credentials. If unset, one is generated in the data directory. |
-| `RABMIN_ADMIN_USER`, `RABMIN_ADMIN_PASSWORD` | | Create the first admin on startup |
-| `RABMIN_ALLOW_SETUP` | `true` | Let the first visitor create the admin when no users exist. Turn off when exposing rabmin before setup. |
-| `RABMIN_POLL_INTERVAL` | `5s` | How often each cluster is polled |
-| `RABMIN_SECURE_COOKIES` | `false` | Mark session cookies `Secure` (enable behind HTTPS) |
-| `RABMIN_TLS_CERT`, `RABMIN_TLS_KEY` | | Serve HTTPS directly |
-| `RABMIN_LOG_JSON` | `false` | JSON logs |
+| Option | Variable | Default | |
+|---|---|---|---|
+| `--addr` | `RABMIN_ADDR` | `:8080` | Listen address |
+| `--data` | `RABMIN_DATA` | `./data` | Database and secret key directory |
+| `--secret-key` | `RABMIN_SECRET_KEY` | | Base64 32-byte key for encrypting credentials. If unset, one is generated in the data directory. Prefer the variable: secrets on a command line are visible in `ps`. |
+| `--admin-user`, `--admin-password` | `RABMIN_ADMIN_USER`, `RABMIN_ADMIN_PASSWORD` | | Create the first admin on startup |
+| `--allow-setup` | `RABMIN_ALLOW_SETUP` | `true` | Let the first visitor create the admin when no users exist. Turn off when exposing rabmin before setup. |
+| `--poll` | `RABMIN_POLL_INTERVAL` | `5s` | How often each cluster is polled |
+| `--secure-cookies` | `RABMIN_SECURE_COOKIES` | `false` | Mark session cookies `Secure` (enable behind HTTPS) |
+| `--tls-cert`, `--tls-key` | `RABMIN_TLS_CERT`, `RABMIN_TLS_KEY` | | Serve HTTPS directly |
+| `--log-json` | `RABMIN_LOG_JSON` | `false` | JSON logs |
 
-`rabmin openapi` prints the OpenAPI document.
+`rabmin` with no command serves; `rabmin openapi` prints the OpenAPI document and `rabmin version` the version. `rabmin --help-json-schema` describes the whole command line as JSON, and `rabmin --completion bash` (or `zsh`, `fish`) prints a completion script.
 
 ## Roles
 
