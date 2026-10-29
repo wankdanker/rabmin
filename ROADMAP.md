@@ -6,18 +6,7 @@ rabmin is built in phases. Each phase ends with integration tests passing agains
 
 - **Phase 0, scaffold:** natsmin's skeleton renamed (auth, users, tokens, audit, UI shell, CI and release pipeline); Docker dev clusters with demo traffic.
 - **Phase 1, observe:** cluster registry with management URL failover and a connection test; poller with snapshots and history from the management API, health checks and Prometheus; fleet and cluster overview, nodes, health matrix, connections, channels, consumers.
-
-## Phase 2: objects
-
-- [#8](https://github.com/wankdanker/rabmin/issues/8) Virtual hosts: create, edit, delete, limits
-- [#9](https://github.com/wankdanker/rabmin/issues/9) Exchanges and bindings
-- [#10](https://github.com/wankdanker/rabmin/issues/10) Queues and streams: list, create with argument helpers, detail, purge, delete
-- [#11](https://github.com/wankdanker/rabmin/issues/11) Publish a message to an exchange
-- [#12](https://github.com/wankdanker/rabmin/issues/12) RabbitMQ users, permissions, topic permissions and user limits
-- [#13](https://github.com/wankdanker/rabmin/issues/13) Policies and operator policies with a definition editor
-- [#14](https://github.com/wankdanker/rabmin/issues/14) Global and vhost parameters, cluster tags
-- [#15](https://github.com/wankdanker/rabmin/issues/15) Definitions export and import with a diff preview
-- [#16](https://github.com/wankdanker/rabmin/issues/16) Feature flags and deprecated features
+- **Phase 2, objects:** virtual hosts, exchanges and bindings, queues and streams, publishing, RabbitMQ users and permissions, policies, parameters and cluster tags, definitions export and import with a diff, feature flags.
 
 ## Phase 3: messages
 

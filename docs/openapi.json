@@ -72,7 +72,7 @@
         "additionalProperties": false,
         "properties": {
           "kind": {
-            "description": "node-down, alarm, partition, health, maintenance, version-mismatch, queue-no-consumers, queue-state, queue-members-offline, endpoint",
+            "description": "node-down, alarm, partition, health, maintenance, version-mismatch, deprecated-feature, queue-no-consumers, queue-state, queue-members-offline, endpoint",
             "type": "string"
           },
           "message": {
@@ -137,6 +137,86 @@
           "action",
           "target",
           "ok"
+        ],
+        "type": "object"
+      },
+      "Binding": {
+        "additionalProperties": false,
+        "properties": {
+          "arguments": {},
+          "destination": {
+            "type": "string"
+          },
+          "destinationType": {
+            "enum": [
+              "queue",
+              "exchange"
+            ],
+            "type": "string"
+          },
+          "propertiesKey": {
+            "description": "Identifies the binding for deletion",
+            "type": "string"
+          },
+          "routingKey": {
+            "type": "string"
+          },
+          "source": {
+            "description": "Empty for the default exchange",
+            "type": "string"
+          },
+          "vhost": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "vhost",
+          "source",
+          "destination",
+          "destinationType",
+          "routingKey",
+          "arguments",
+          "propertiesKey"
+        ],
+        "type": "object"
+      },
+      "BindingIn": {
+        "additionalProperties": false,
+        "properties": {
+          "arguments": {
+            "additionalProperties": {},
+            "description": "Headers exchange matching uses x-match: all|any|all-with-x|any-with-x plus header values",
+            "type": "object"
+          },
+          "destination": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "destinationType": {
+            "enum": [
+              "queue",
+              "exchange"
+            ],
+            "type": "string"
+          },
+          "routingKey": {
+            "type": "string"
+          },
+          "source": {
+            "description": "Source exchange (the default exchange cannot be bound)",
+            "minLength": 1,
+            "type": "string"
+          },
+          "vhost": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "vhost",
+          "source",
+          "destination",
+          "destinationType"
         ],
         "type": "object"
       },
@@ -616,6 +696,21 @@
           "publishRate",
           "deliverRate",
           "ratesSource"
+        ],
+        "type": "object"
+      },
+      "ClusterTagsBody": {
+        "additionalProperties": false,
+        "properties": {
+          "tags": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          }
+        },
+        "required": [
+          "tags"
         ],
         "type": "object"
       },
@@ -1147,6 +1242,170 @@
         ],
         "type": "object"
       },
+      "DefinitionChange": {
+        "additionalProperties": false,
+        "properties": {
+          "after": {},
+          "before": {},
+          "change": {
+            "description": "conflict: the object exists with other properties and import will not change it; cluster-only: import never deletes",
+            "enum": [
+              "added",
+              "changed",
+              "conflict",
+              "unchanged",
+              "cluster-only"
+            ],
+            "type": "string"
+          },
+          "fields": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "description": "vhosts, users, permissions, topic_permissions, policies, parameters, global_parameters, exchanges, queues or bindings",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "vhost": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "name",
+          "change",
+          "fields"
+        ],
+        "type": "object"
+      },
+      "DefinitionsDiff": {
+        "additionalProperties": false,
+        "properties": {
+          "changes": {
+            "items": {
+              "$ref": "#/components/schemas/DefinitionChange"
+            },
+            "type": "array"
+          },
+          "counts": {
+            "additionalProperties": {
+              "format": "int64",
+              "type": "integer"
+            },
+            "description": "Number of changes by change type",
+            "type": "object"
+          }
+        },
+        "required": [
+          "changes",
+          "counts"
+        ],
+        "type": "object"
+      },
+      "DefinitionsIn": {
+        "additionalProperties": false,
+        "properties": {
+          "definitions": {
+            "description": "A RabbitMQ definitions export (whole cluster, or one vhost when vhost is set)"
+          },
+          "vhost": {
+            "description": "Compare and import against this vhost; the file is a vhost export",
+            "type": "string"
+          }
+        },
+        "required": [
+          "definitions"
+        ],
+        "type": "object"
+      },
+      "Delete-rabbit-usersRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "users": {
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "type": "array"
+          }
+        },
+        "required": [
+          "users"
+        ],
+        "type": "object"
+      },
+      "DeprecatedFeature": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "docUrl": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "phase": {
+            "description": "permitted_by_default, denied_by_default, disconnected or removed",
+            "type": "string"
+          },
+          "providedBy": {
+            "type": "string"
+          },
+          "state": {
+            "description": "permitted or denied",
+            "type": "string"
+          },
+          "used": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "description",
+          "phase",
+          "state",
+          "used"
+        ],
+        "type": "object"
+      },
+      "Enable-feature-flagsRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "names": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "Enable-feature-flagsResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "enabled": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "enabled"
+        ],
+        "type": "object"
+      },
       "Endpoint": {
         "additionalProperties": false,
         "properties": {
@@ -1243,6 +1502,193 @@
         },
         "type": "object"
       },
+      "Exchange": {
+        "additionalProperties": false,
+        "properties": {
+          "arguments": {},
+          "autoDelete": {
+            "type": "boolean"
+          },
+          "durable": {
+            "type": "boolean"
+          },
+          "internal": {
+            "type": "boolean"
+          },
+          "name": {
+            "description": "Empty for the default exchange, which paths address as amq.default",
+            "type": "string"
+          },
+          "policy": {
+            "type": "string"
+          },
+          "rateIn": {
+            "format": "double",
+            "type": "number"
+          },
+          "rateOut": {
+            "format": "double",
+            "type": "number"
+          },
+          "type": {
+            "type": "string"
+          },
+          "vhost": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "vhost",
+          "name",
+          "type",
+          "durable",
+          "autoDelete",
+          "internal",
+          "arguments",
+          "rateIn",
+          "rateOut"
+        ],
+        "type": "object"
+      },
+      "ExchangeDetail": {
+        "additionalProperties": false,
+        "properties": {
+          "destination": {
+            "items": {
+              "$ref": "#/components/schemas/Binding"
+            },
+            "type": "array"
+          },
+          "exchange": {
+            "$ref": "#/components/schemas/Exchange"
+          },
+          "raw": {},
+          "source": {
+            "items": {
+              "$ref": "#/components/schemas/Binding"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "exchange",
+          "source",
+          "destination",
+          "raw"
+        ],
+        "type": "object"
+      },
+      "ExchangesPage": {
+        "additionalProperties": false,
+        "properties": {
+          "filtered": {
+            "description": "Items matching the filters",
+            "format": "int64",
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Exchange"
+            },
+            "type": "array"
+          },
+          "page": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "pageSize": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "total": {
+            "description": "Items before filtering",
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "filtered",
+          "page",
+          "pageSize"
+        ],
+        "type": "object"
+      },
+      "FeatureFlag": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "docUrl": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "providedBy": {
+            "type": "string"
+          },
+          "requireLevel": {
+            "type": "string"
+          },
+          "stability": {
+            "description": "required, stable or experimental",
+            "type": "string"
+          },
+          "state": {
+            "description": "enabled, disabled or state_changing",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "description",
+          "state",
+          "stability"
+        ],
+        "type": "object"
+      },
+      "GlobalParameter": {
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {}
+        },
+        "required": [
+          "name",
+          "value"
+        ],
+        "type": "object"
+      },
+      "Hash-passwordRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "password": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "password"
+        ],
+        "type": "object"
+      },
+      "Hash-passwordResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "hash": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "hash"
+        ],
+        "type": "object"
+      },
       "HealthResult": {
         "additionalProperties": false,
         "properties": {
@@ -1269,6 +1715,42 @@
           "node",
           "check",
           "status"
+        ],
+        "type": "object"
+      },
+      "Import-definitionsRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "definitions": {
+            "description": "A RabbitMQ definitions export (whole cluster, or one vhost when vhost is set)"
+          },
+          "select": {
+            "description": "Change ids from diff-definitions; empty imports every added and changed object",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "vhost": {
+            "description": "Compare and import against this vhost; the file is a vhost export",
+            "type": "string"
+          }
+        },
+        "required": [
+          "definitions"
+        ],
+        "type": "object"
+      },
+      "Import-definitionsResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "imported": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "imported"
         ],
         "type": "object"
       },
@@ -1549,6 +2031,22 @@
         ],
         "type": "object"
       },
+      "NodeState": {
+        "additionalProperties": false,
+        "properties": {
+          "node": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "node",
+          "state"
+        ],
+        "type": "object"
+      },
       "ObjectRate": {
         "additionalProperties": false,
         "properties": {
@@ -1575,6 +2073,228 @@
         ],
         "type": "object"
       },
+      "Parameter": {
+        "additionalProperties": false,
+        "properties": {
+          "component": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "description": "Passwords in URIs are redacted"
+          },
+          "vhost": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "component",
+          "vhost",
+          "name",
+          "value"
+        ],
+        "type": "object"
+      },
+      "Permission": {
+        "additionalProperties": false,
+        "properties": {
+          "configure": {
+            "type": "string"
+          },
+          "read": {
+            "type": "string"
+          },
+          "user": {
+            "type": "string"
+          },
+          "vhost": {
+            "type": "string"
+          },
+          "write": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "user",
+          "vhost",
+          "configure",
+          "write",
+          "read"
+        ],
+        "type": "object"
+      },
+      "Policy": {
+        "additionalProperties": false,
+        "properties": {
+          "applyTo": {
+            "description": "all, queues, classic_queues, quorum_queues, streams or exchanges",
+            "type": "string"
+          },
+          "definition": {},
+          "name": {
+            "type": "string"
+          },
+          "operator": {
+            "type": "boolean"
+          },
+          "pattern": {
+            "type": "string"
+          },
+          "priority": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "vhost": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "vhost",
+          "name",
+          "pattern",
+          "applyTo",
+          "priority",
+          "definition",
+          "operator"
+        ],
+        "type": "object"
+      },
+      "PolicyIn": {
+        "additionalProperties": false,
+        "properties": {
+          "applyTo": {
+            "enum": [
+              "all",
+              "queues",
+              "classic_queues",
+              "quorum_queues",
+              "streams",
+              "exchanges"
+            ],
+            "type": "string"
+          },
+          "definition": {
+            "description": "Policy keys and values, e.g. {\"max-length\": 1000}"
+          },
+          "pattern": {
+            "description": "Regular expression matched against queue or exchange names",
+            "minLength": 1,
+            "type": "string"
+          },
+          "priority": {
+            "format": "int64",
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "pattern",
+          "applyTo",
+          "priority",
+          "definition"
+        ],
+        "type": "object"
+      },
+      "PolicyMatch": {
+        "additionalProperties": false,
+        "properties": {
+          "current": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "queue",
+              "exchange"
+            ],
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "tie": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "wins": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "kind",
+          "name",
+          "type",
+          "wins"
+        ],
+        "type": "object"
+      },
+      "PolicyPreview": {
+        "additionalProperties": false,
+        "properties": {
+          "approximate": {
+            "type": "boolean"
+          },
+          "matches": {
+            "items": {
+              "$ref": "#/components/schemas/PolicyMatch"
+            },
+            "type": "array"
+          },
+          "note": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "matches",
+          "approximate"
+        ],
+        "type": "object"
+      },
+      "Preview-policyRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "applyTo": {
+            "enum": [
+              "all",
+              "queues",
+              "classic_queues",
+              "quorum_queues",
+              "streams",
+              "exchanges"
+            ],
+            "type": "string"
+          },
+          "name": {
+            "description": "The policy's name, so an existing policy of that name is replaced in the comparison",
+            "type": "string"
+          },
+          "operator": {
+            "type": "boolean"
+          },
+          "pattern": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "priority": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "vhost": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "vhost",
+          "pattern",
+          "applyTo",
+          "priority"
+        ],
+        "type": "object"
+      },
       "PromSummary": {
         "additionalProperties": false,
         "properties": {
@@ -1594,6 +2314,274 @@
         "required": [
           "url",
           "ok"
+        ],
+        "type": "object"
+      },
+      "PublishIn": {
+        "additionalProperties": false,
+        "properties": {
+          "credential": {
+            "description": "Publish as this credential profile instead of the management user",
+            "type": "string"
+          },
+          "payload": {
+            "type": "string"
+          },
+          "payloadEncoding": {
+            "description": "Defaults to string",
+            "enum": [
+              "string",
+              "base64"
+            ],
+            "type": "string"
+          },
+          "properties": {
+            "$ref": "#/components/schemas/PublishProps"
+          },
+          "routingKey": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "payload"
+        ],
+        "type": "object"
+      },
+      "PublishOut": {
+        "additionalProperties": false,
+        "properties": {
+          "routed": {
+            "description": "False when no binding matched; the message was dropped or went to an alternate exchange's queues only if one is configured",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "routed"
+        ],
+        "type": "object"
+      },
+      "PublishProps": {
+        "additionalProperties": false,
+        "properties": {
+          "appId": {
+            "type": "string"
+          },
+          "contentEncoding": {
+            "type": "string"
+          },
+          "contentType": {
+            "type": "string"
+          },
+          "correlationId": {
+            "type": "string"
+          },
+          "deliveryMode": {
+            "description": "1 transient, 2 persistent",
+            "format": "int64",
+            "maximum": 2,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "expiration": {
+            "description": "Per-message TTL in milliseconds, as a string",
+            "type": "string"
+          },
+          "headers": {
+            "additionalProperties": {},
+            "type": "object"
+          },
+          "messageId": {
+            "type": "string"
+          },
+          "priority": {
+            "format": "int64",
+            "maximum": 255,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "replyTo": {
+            "type": "string"
+          },
+          "timestamp": {
+            "description": "Unix seconds",
+            "format": "int64",
+            "type": "integer"
+          },
+          "type": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Put-exchangeRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "arguments": {
+            "additionalProperties": {},
+            "description": "For example alternate-exchange",
+            "type": "object"
+          },
+          "autoDelete": {
+            "type": "boolean"
+          },
+          "durable": {
+            "description": "Defaults to true",
+            "type": "boolean"
+          },
+          "internal": {
+            "type": "boolean"
+          },
+          "type": {
+            "description": "direct, fanout, topic, headers, or a plugin type from the cluster info",
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "type"
+        ],
+        "type": "object"
+      },
+      "Put-global-parameterRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "value": {}
+        },
+        "required": [
+          "value"
+        ],
+        "type": "object"
+      },
+      "Put-parameterRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "value": {}
+        },
+        "required": [
+          "value"
+        ],
+        "type": "object"
+      },
+      "Queue": {
+        "additionalProperties": false,
+        "properties": {
+          "ackRate": {
+            "format": "double",
+            "type": "number"
+          },
+          "arguments": {},
+          "autoDelete": {
+            "type": "boolean"
+          },
+          "consumerCapacity": {
+            "description": "0..1: how often the queue could deliver to consumers immediately",
+            "format": "double",
+            "type": "number"
+          },
+          "consumers": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "deliverRate": {
+            "format": "double",
+            "type": "number"
+          },
+          "deliveryLimit": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "durable": {
+            "type": "boolean"
+          },
+          "exclusive": {
+            "type": "boolean"
+          },
+          "leader": {
+            "type": "string"
+          },
+          "members": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "memory": {
+            "format": "double",
+            "type": "number"
+          },
+          "messageBytes": {
+            "format": "double",
+            "type": "number"
+          },
+          "messages": {
+            "format": "double",
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "node": {
+            "type": "string"
+          },
+          "online": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "operatorPolicy": {
+            "type": "string"
+          },
+          "policy": {
+            "type": "string"
+          },
+          "publishRate": {
+            "format": "double",
+            "type": "number"
+          },
+          "ready": {
+            "format": "double",
+            "type": "number"
+          },
+          "state": {
+            "type": "string"
+          },
+          "type": {
+            "description": "classic, quorum or stream",
+            "type": "string"
+          },
+          "unacked": {
+            "format": "double",
+            "type": "number"
+          },
+          "vhost": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "vhost",
+          "name",
+          "type",
+          "state",
+          "durable",
+          "autoDelete",
+          "exclusive",
+          "arguments",
+          "messages",
+          "ready",
+          "unacked",
+          "messageBytes",
+          "memory",
+          "consumers",
+          "consumerCapacity",
+          "publishRate",
+          "deliverRate",
+          "ackRate",
+          "members",
+          "online"
         ],
         "type": "object"
       },
@@ -1668,6 +2656,213 @@
           "deliverRate",
           "members",
           "online"
+        ],
+        "type": "object"
+      },
+      "QueueDetail": {
+        "additionalProperties": false,
+        "properties": {
+          "bindings": {
+            "items": {
+              "$ref": "#/components/schemas/Binding"
+            },
+            "type": "array"
+          },
+          "bytesReady": {
+            "format": "double",
+            "type": "number"
+          },
+          "bytesUnacked": {
+            "format": "double",
+            "type": "number"
+          },
+          "consumers": {
+            "items": {
+              "$ref": "#/components/schemas/Consumer"
+            },
+            "type": "array"
+          },
+          "effectivePolicy": {
+            "description": "Policy and operator policy keys in effect"
+          },
+          "messagesPersistent": {
+            "format": "double",
+            "type": "number"
+          },
+          "messagesRam": {
+            "format": "double",
+            "type": "number"
+          },
+          "queue": {
+            "$ref": "#/components/schemas/Queue"
+          },
+          "raw": {}
+        },
+        "required": [
+          "queue",
+          "effectivePolicy",
+          "messagesPersistent",
+          "messagesRam",
+          "bytesReady",
+          "bytesUnacked",
+          "consumers",
+          "bindings",
+          "raw"
+        ],
+        "type": "object"
+      },
+      "QueueIn": {
+        "additionalProperties": false,
+        "properties": {
+          "arguments": {
+            "additionalProperties": {},
+            "description": "x-arguments other than x-queue-type",
+            "type": "object"
+          },
+          "autoDelete": {
+            "type": "boolean"
+          },
+          "durable": {
+            "description": "Defaults to true. RabbitMQ 4.x refuses non-durable, non-exclusive queues unless the deprecated transient_nonexcl_queues feature is permitted.",
+            "type": "boolean"
+          },
+          "node": {
+            "description": "Node for a classic queue, or the leader of a quorum queue or stream",
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "classic",
+              "quorum",
+              "stream"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "type"
+        ],
+        "type": "object"
+      },
+      "QueuesPage": {
+        "additionalProperties": false,
+        "properties": {
+          "filtered": {
+            "description": "Items matching the filters",
+            "format": "int64",
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Queue"
+            },
+            "type": "array"
+          },
+          "page": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "pageSize": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "total": {
+            "description": "Items before filtering",
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "filtered",
+          "page",
+          "pageSize"
+        ],
+        "type": "object"
+      },
+      "RabbitUser": {
+        "additionalProperties": false,
+        "properties": {
+          "hasPassword": {
+            "type": "boolean"
+          },
+          "hashingAlgorithm": {
+            "type": "string"
+          },
+          "maxChannels": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "maxConnections": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "vhosts": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "name",
+          "tags",
+          "hasPassword",
+          "vhosts"
+        ],
+        "type": "object"
+      },
+      "RabbitUserIn": {
+        "additionalProperties": false,
+        "properties": {
+          "hashingAlgorithm": {
+            "description": "With passwordHash, e.g. rabbit_password_hashing_sha256",
+            "type": "string"
+          },
+          "maxChannels": {
+            "description": "-1 removes the limit",
+            "format": "int64",
+            "minimum": -1,
+            "type": "integer"
+          },
+          "maxConnections": {
+            "description": "-1 removes the limit",
+            "format": "int64",
+            "minimum": -1,
+            "type": "integer"
+          },
+          "noPassword": {
+            "description": "Create the user without a password (certificate or OAuth2 login only)",
+            "type": "boolean"
+          },
+          "password": {
+            "maxLength": 512,
+            "type": "string"
+          },
+          "passwordHash": {
+            "description": "A hash from POST /api/auth/hash_password or another cluster's definitions",
+            "type": "string"
+          },
+          "tags": {
+            "description": "administrator, monitoring, policymaker, management, impersonator, or custom tags",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "tags"
         ],
         "type": "object"
       },
@@ -1904,6 +3099,47 @@
         ],
         "type": "object"
       },
+      "Set-permissionRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "configure": {
+            "type": "string"
+          },
+          "read": {
+            "type": "string"
+          },
+          "write": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "configure",
+          "write",
+          "read"
+        ],
+        "type": "object"
+      },
+      "Set-topic-permissionRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "exchange": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "read": {
+            "type": "string"
+          },
+          "write": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "exchange",
+          "write",
+          "read"
+        ],
+        "type": "object"
+      },
       "Snapshot": {
         "additionalProperties": false,
         "properties": {
@@ -2017,6 +3253,19 @@
           "queues",
           "attention",
           "prometheus"
+        ],
+        "type": "object"
+      },
+      "Start-vhostRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "node": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "node"
         ],
         "type": "object"
       },
@@ -2321,6 +3570,34 @@
         ],
         "type": "object"
       },
+      "TopicPermission": {
+        "additionalProperties": false,
+        "properties": {
+          "exchange": {
+            "type": "string"
+          },
+          "read": {
+            "type": "string"
+          },
+          "user": {
+            "type": "string"
+          },
+          "vhost": {
+            "type": "string"
+          },
+          "write": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "user",
+          "vhost",
+          "exchange",
+          "write",
+          "read"
+        ],
+        "type": "object"
+      },
       "Totals": {
         "additionalProperties": false,
         "properties": {
@@ -2429,6 +3706,126 @@
           "disabled",
           "createdAt"
         ],
+        "type": "object"
+      },
+      "VHost": {
+        "additionalProperties": false,
+        "properties": {
+          "defaultQueueType": {
+            "type": "string"
+          },
+          "deliverRate": {
+            "format": "double",
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          },
+          "maxConnections": {
+            "description": "Limit; absent when unlimited",
+            "format": "int64",
+            "type": "integer"
+          },
+          "maxQueues": {
+            "description": "Limit; absent when unlimited",
+            "format": "int64",
+            "type": "integer"
+          },
+          "messages": {
+            "format": "double",
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "nodeStates": {
+            "description": "Whether the vhost runs on each node",
+            "items": {
+              "$ref": "#/components/schemas/NodeState"
+            },
+            "type": "array"
+          },
+          "protected": {
+            "description": "Deletion protection",
+            "type": "boolean"
+          },
+          "publishRate": {
+            "format": "double",
+            "type": "number"
+          },
+          "ready": {
+            "format": "double",
+            "type": "number"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "tracing": {
+            "type": "boolean"
+          },
+          "unacked": {
+            "format": "double",
+            "type": "number"
+          }
+        },
+        "required": [
+          "name",
+          "description",
+          "tags",
+          "defaultQueueType",
+          "protected",
+          "tracing",
+          "messages",
+          "ready",
+          "unacked",
+          "publishRate",
+          "deliverRate",
+          "nodeStates"
+        ],
+        "type": "object"
+      },
+      "VHostIn": {
+        "additionalProperties": false,
+        "properties": {
+          "defaultQueueType": {
+            "description": "Queue type for declarations that do not name one",
+            "enum": [
+              "classic",
+              "quorum",
+              "stream"
+            ],
+            "type": "string"
+          },
+          "description": {
+            "maxLength": 1000,
+            "type": "string"
+          },
+          "maxConnections": {
+            "description": "-1 removes the limit",
+            "format": "int64",
+            "minimum": -1,
+            "type": "integer"
+          },
+          "maxQueues": {
+            "description": "-1 removes the limit",
+            "format": "int64",
+            "minimum": -1,
+            "type": "integer"
+          },
+          "protected": {
+            "description": "Deletion protection",
+            "type": "boolean"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
         "type": "object"
       },
       "WebContext": {
@@ -2978,6 +4375,201 @@
         ]
       }
     },
+    "/v1/clusters/{cluster}/bindings": {
+      "get": {
+        "description": "Requires role: **viewer**.",
+        "operationId": "list-bindings",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "vhost",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "source",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "destination",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Binding"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "List bindings",
+        "tags": [
+          "Exchanges and bindings"
+        ]
+      },
+      "post": {
+        "description": "Requires role: **operator**.",
+        "operationId": "create-binding",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BindingIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Bind an exchange to a queue or exchange",
+        "tags": [
+          "Exchanges and bindings"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/bindings/{vhost}/{source}/{destinationType}/{destination}/{propertiesKey}": {
+      "delete": {
+        "description": "propertiesKey is the binding's propertiesKey exactly as listed, URL-encoded as a path segment like the other parameters.\n\nRequires role: **operator**.",
+        "operationId": "delete-binding",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "vhost",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "source",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "destinationType",
+            "required": true,
+            "schema": {
+              "enum": [
+                "queue",
+                "exchange"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "destination",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "propertiesKey",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Delete a binding",
+        "tags": [
+          "Exchanges and bindings"
+        ]
+      }
+    },
     "/v1/clusters/{cluster}/channels": {
       "get": {
         "description": "Rates are averages over the last 30 seconds.\n\nRequires role: **viewer**.",
@@ -3195,6 +4787,95 @@
         "summary": "Rename the RabbitMQ cluster",
         "tags": [
           "Monitoring"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/cluster-tags": {
+      "get": {
+        "description": "Requires role: **viewer**.",
+        "operationId": "get-cluster-tags",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClusterTagsBody"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Cluster tags",
+        "tags": [
+          "Parameters"
+        ]
+      },
+      "put": {
+        "description": "Key/value tags stored in the cluster_tags global parameter and reported by /api/overview.\n\nRequires role: **admin**.",
+        "operationId": "set-cluster-tags",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClusterTagsBody"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Replace the cluster tags",
+        "tags": [
+          "Parameters"
         ]
       }
     },
@@ -3826,6 +5507,218 @@
         ]
       }
     },
+    "/v1/clusters/{cluster}/definitions": {
+      "get": {
+        "description": "The RabbitMQ definitions of the whole cluster, or of one vhost. Contains password hashes, so admin only.\n\nRequires role: **admin**.",
+        "operationId": "export-definitions",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "vhost",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "description": "OK",
+            "headers": {
+              "Content-Disposition": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Export definitions",
+        "tags": [
+          "Definitions"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/definitions/diff": {
+      "post": {
+        "description": "Shows what importing a definitions file would do. Import never deletes (cluster-only objects stay) and skips exchanges and queues that exist with other properties (conflicts).\n\nRequires role: **admin**.",
+        "operationId": "diff-definitions",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DefinitionsIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefinitionsDiff"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Compare definitions with the cluster",
+        "tags": [
+          "Definitions"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/definitions/import": {
+      "post": {
+        "description": "Imports the added and changed objects of a definitions file, or only those whose change ids are listed in select. Conflicts and cluster-only objects are never touched.\n\nRequires role: **admin**.",
+        "operationId": "import-definitions",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Import-definitionsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Import-definitionsResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Import definitions",
+        "tags": [
+          "Definitions"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/deprecated-features": {
+      "get": {
+        "description": "Deprecated features with their phase and whether the cluster uses them now.\n\nRequires role: **viewer**.",
+        "operationId": "list-deprecated-features",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/DeprecatedFeature"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "List deprecated features",
+        "tags": [
+          "Feature flags"
+        ]
+      }
+    },
     "/v1/clusters/{cluster}/events": {
       "get": {
         "description": "Server-sent events: a `snapshot` event after every poll. Requires role: **viewer**.",
@@ -3906,6 +5799,707 @@
         "summary": "Live snapshots (SSE)",
         "tags": [
           "Monitoring"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/exchanges": {
+      "get": {
+        "description": "Rates are averages over the last 30 seconds.\n\nRequires role: **viewer**.",
+        "operationId": "list-exchanges",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Case-insensitive substring matched against names, client name, user, vhost and node",
+            "explode": false,
+            "in": "query",
+            "name": "q",
+            "schema": {
+              "description": "Case-insensitive substring matched against names, client name, user, vhost and node",
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "vhost",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "user",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "node",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Field to sort by (a JSON field name of the items)",
+            "explode": false,
+            "in": "query",
+            "name": "sort",
+            "schema": {
+              "description": "Field to sort by (a JSON field name of the items)",
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "desc",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "default": 1,
+              "format": "int64",
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "pageSize",
+            "schema": {
+              "default": 100,
+              "format": "int64",
+              "maximum": 2000,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Include amq.* and internal exchanges",
+            "explode": false,
+            "in": "query",
+            "name": "internal",
+            "schema": {
+              "description": "Include amq.* and internal exchanges",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExchangesPage"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "List exchanges",
+        "tags": [
+          "Exchanges and bindings"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/exchanges/{vhost}/{name}": {
+      "delete": {
+        "description": "Requires role: **operator**.",
+        "operationId": "delete-exchange",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Virtual host (URL-encoded; / is %2F)",
+            "in": "path",
+            "name": "vhost",
+            "required": true,
+            "schema": {
+              "description": "Virtual host (URL-encoded; / is %2F)",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Name (URL-encoded); the default exchange is amq.default",
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "description": "Name (URL-encoded); the default exchange is amq.default",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Refuse (409) when the exchange has bindings",
+            "explode": false,
+            "in": "query",
+            "name": "ifUnused",
+            "schema": {
+              "description": "Refuse (409) when the exchange has bindings",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Delete an exchange",
+        "tags": [
+          "Exchanges and bindings"
+        ]
+      },
+      "get": {
+        "description": "The exchange with its bindings as source and as destination.\n\nRequires role: **viewer**.",
+        "operationId": "get-exchange",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Virtual host (URL-encoded; / is %2F)",
+            "in": "path",
+            "name": "vhost",
+            "required": true,
+            "schema": {
+              "description": "Virtual host (URL-encoded; / is %2F)",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Name (URL-encoded); the default exchange is amq.default",
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "description": "Name (URL-encoded); the default exchange is amq.default",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExchangeDetail"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Exchange detail",
+        "tags": [
+          "Exchanges and bindings"
+        ]
+      },
+      "put": {
+        "description": "Declaring an existing exchange with different properties fails.\n\nRequires role: **operator**.",
+        "operationId": "put-exchange",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Virtual host (URL-encoded; / is %2F)",
+            "in": "path",
+            "name": "vhost",
+            "required": true,
+            "schema": {
+              "description": "Virtual host (URL-encoded; / is %2F)",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Name (URL-encoded); the default exchange is amq.default",
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "description": "Name (URL-encoded); the default exchange is amq.default",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Put-exchangeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Declare an exchange",
+        "tags": [
+          "Exchanges and bindings"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/exchanges/{vhost}/{name}/publish": {
+      "post": {
+        "description": "Publishes one message through the management API and reports whether it was routed. Use amq.default to publish straight to a queue by name.\n\nRequires role: **operator**.",
+        "operationId": "publish",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Virtual host (URL-encoded; / is %2F)",
+            "in": "path",
+            "name": "vhost",
+            "required": true,
+            "schema": {
+              "description": "Virtual host (URL-encoded; / is %2F)",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Name (URL-encoded); the default exchange is amq.default",
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "description": "Name (URL-encoded); the default exchange is amq.default",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PublishIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublishOut"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Publish a message",
+        "tags": [
+          "Exchanges and bindings"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/feature-flags": {
+      "get": {
+        "description": "Requires role: **viewer**.",
+        "operationId": "list-feature-flags",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/FeatureFlag"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "List feature flags",
+        "tags": [
+          "Feature flags"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/feature-flags/enable": {
+      "post": {
+        "description": "Enables the named flags, or every disabled stable flag when names is empty. Feature flags cannot be disabled again. Experimental flags must be named explicitly.\n\nRequires role: **admin**.",
+        "operationId": "enable-feature-flags",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Enable-feature-flagsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enable-feature-flagsResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Enable feature flags",
+        "tags": [
+          "Feature flags"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/global-parameters": {
+      "get": {
+        "description": "Requires role: **viewer**.",
+        "operationId": "list-global-parameters",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/GlobalParameter"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "List global parameters",
+        "tags": [
+          "Parameters"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/global-parameters/{name}": {
+      "delete": {
+        "description": "Requires role: **admin**.",
+        "operationId": "delete-global-parameter",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Delete a global parameter",
+        "tags": [
+          "Parameters"
+        ]
+      },
+      "put": {
+        "description": "cluster_name and internal_cluster_id are managed by RabbitMQ; use set-cluster-name to rename the cluster.\n\nRequires role: **admin**.",
+        "operationId": "put-global-parameter",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Put-global-parameterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Set a global parameter",
+        "tags": [
+          "Parameters"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/hash-password": {
+      "post": {
+        "description": "Hashes a password with the cluster's configured algorithm, for definitions files.\n\nRequires role: **admin**.",
+        "operationId": "hash-password",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Hash-passwordRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Hash-passwordResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Hash a password",
+        "tags": [
+          "RabbitMQ users and permissions"
         ]
       }
     },
@@ -4054,6 +6648,1192 @@
         "summary": "Reset a node's statistics",
         "tags": [
           "Monitoring"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/operator-policies": {
+      "get": {
+        "description": "Requires role: **viewer**.",
+        "operationId": "list-operator-policys",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "vhost",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Policy"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "List operator policys",
+        "tags": [
+          "Policies"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/operator-policies/{vhost}/{name}": {
+      "delete": {
+        "description": "Requires role: **admin**.",
+        "operationId": "delete-operator-policy",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Virtual host (URL-encoded; / is %2F)",
+            "in": "path",
+            "name": "vhost",
+            "required": true,
+            "schema": {
+              "description": "Virtual host (URL-encoded; / is %2F)",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Name (URL-encoded); the default exchange is amq.default",
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "description": "Name (URL-encoded); the default exchange is amq.default",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Delete a operator policy",
+        "tags": [
+          "Policies"
+        ]
+      },
+      "put": {
+        "description": "RabbitMQ validates the definition and rejects unknown keys.\n\nRequires role: **admin**.",
+        "operationId": "put-operator-policy",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Virtual host (URL-encoded; / is %2F)",
+            "in": "path",
+            "name": "vhost",
+            "required": true,
+            "schema": {
+              "description": "Virtual host (URL-encoded; / is %2F)",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Name (URL-encoded); the default exchange is amq.default",
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "description": "Name (URL-encoded); the default exchange is amq.default",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PolicyIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Create or replace a operator policy",
+        "tags": [
+          "Policies"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/parameters": {
+      "get": {
+        "description": "Runtime parameters of every component (federation-upstream, shovel, vhost-limits, operator_policy...). Passwords in URIs are redacted.\n\nRequires role: **viewer**.",
+        "operationId": "list-parameters",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "component",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "vhost",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Parameter"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "List vhost parameters",
+        "tags": [
+          "Parameters"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/parameters/{component}/{vhost}/{name}": {
+      "delete": {
+        "description": "Requires role: **admin**.",
+        "operationId": "delete-parameter",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "component",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "vhost",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Delete a vhost parameter",
+        "tags": [
+          "Parameters"
+        ]
+      },
+      "put": {
+        "description": "Requires role: **admin**.",
+        "operationId": "put-parameter",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "component",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "vhost",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Put-parameterRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Set a vhost parameter",
+        "tags": [
+          "Parameters"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/permissions": {
+      "get": {
+        "description": "Requires role: **viewer**.",
+        "operationId": "list-permissions",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "vhost",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "user",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Permission"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "List permissions",
+        "tags": [
+          "RabbitMQ users and permissions"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/permissions/{vhost}/{user}": {
+      "delete": {
+        "description": "Requires role: **admin**.",
+        "operationId": "delete-permission",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "vhost",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "user",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Revoke permissions in a vhost",
+        "tags": [
+          "RabbitMQ users and permissions"
+        ]
+      },
+      "put": {
+        "description": "Configure, write and read are regular expressions over resource names; an empty string grants nothing.\n\nRequires role: **admin**.",
+        "operationId": "set-permission",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "vhost",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "user",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Set-permissionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Grant permissions in a vhost",
+        "tags": [
+          "RabbitMQ users and permissions"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/policies": {
+      "get": {
+        "description": "Requires role: **viewer**.",
+        "operationId": "list-policys",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "vhost",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Policy"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "List policys",
+        "tags": [
+          "Policies"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/policies/preview": {
+      "post": {
+        "description": "Lists the queues and exchanges of a vhost that a pattern and apply-to match, and whether the policy would win against the other policies of the same kind given their priorities. Matching uses Go regular expressions, which agree with RabbitMQ's for common patterns.\n\nRequires role: **viewer**.",
+        "operationId": "preview-policy",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Preview-policyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PolicyPreview"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Preview what a policy matches",
+        "tags": [
+          "Policies"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/policies/{vhost}/{name}": {
+      "delete": {
+        "description": "Requires role: **admin**.",
+        "operationId": "delete-policy",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Virtual host (URL-encoded; / is %2F)",
+            "in": "path",
+            "name": "vhost",
+            "required": true,
+            "schema": {
+              "description": "Virtual host (URL-encoded; / is %2F)",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Name (URL-encoded); the default exchange is amq.default",
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "description": "Name (URL-encoded); the default exchange is amq.default",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Delete a policy",
+        "tags": [
+          "Policies"
+        ]
+      },
+      "put": {
+        "description": "RabbitMQ validates the definition and rejects unknown keys.\n\nRequires role: **admin**.",
+        "operationId": "put-policy",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Virtual host (URL-encoded; / is %2F)",
+            "in": "path",
+            "name": "vhost",
+            "required": true,
+            "schema": {
+              "description": "Virtual host (URL-encoded; / is %2F)",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Name (URL-encoded); the default exchange is amq.default",
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "description": "Name (URL-encoded); the default exchange is amq.default",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PolicyIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Create or replace a policy",
+        "tags": [
+          "Policies"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/queues": {
+      "get": {
+        "description": "Filter by name substring (q) or regular expression (regex), vhost, type, state and policy. Rates are averages over the last 30 seconds.\n\nRequires role: **viewer**.",
+        "operationId": "list-queues",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Case-insensitive substring matched against names, client name, user, vhost and node",
+            "explode": false,
+            "in": "query",
+            "name": "q",
+            "schema": {
+              "description": "Case-insensitive substring matched against names, client name, user, vhost and node",
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "vhost",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "user",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "node",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Field to sort by (a JSON field name of the items)",
+            "explode": false,
+            "in": "query",
+            "name": "sort",
+            "schema": {
+              "description": "Field to sort by (a JSON field name of the items)",
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "desc",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "default": 1,
+              "format": "int64",
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "pageSize",
+            "schema": {
+              "default": 100,
+              "format": "int64",
+              "maximum": 2000,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Regular expression matched against the queue name",
+            "explode": false,
+            "in": "query",
+            "name": "regex",
+            "schema": {
+              "description": "Regular expression matched against the queue name",
+              "type": "string"
+            }
+          },
+          {
+            "description": "classic, quorum or stream",
+            "explode": false,
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "description": "classic, quorum or stream",
+              "type": "string"
+            }
+          },
+          {
+            "description": "running, idle, down, crashed, minority...",
+            "explode": false,
+            "in": "query",
+            "name": "state",
+            "schema": {
+              "description": "running, idle, down, crashed, minority...",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Policy or operator policy name; - for queues without a policy",
+            "explode": false,
+            "in": "query",
+            "name": "policy",
+            "schema": {
+              "description": "Policy or operator policy name; - for queues without a policy",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueuesPage"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "List queues and streams",
+        "tags": [
+          "Queues"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/queues/{vhost}/{name}": {
+      "delete": {
+        "description": "Deletes the queue and its messages. ifEmpty and ifUnused make RabbitMQ refuse (409) a queue with messages or consumers.\n\nRequires role: **operator**.",
+        "operationId": "delete-queue",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Virtual host (URL-encoded; / is %2F)",
+            "in": "path",
+            "name": "vhost",
+            "required": true,
+            "schema": {
+              "description": "Virtual host (URL-encoded; / is %2F)",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Name (URL-encoded); the default exchange is amq.default",
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "description": "Name (URL-encoded); the default exchange is amq.default",
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "ifEmpty",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "ifUnused",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Delete a queue",
+        "tags": [
+          "Queues"
+        ]
+      },
+      "get": {
+        "description": "Features, effective policy, state, members, message counts and bytes, rates, consumers and bindings.\n\nRequires role: **viewer**.",
+        "operationId": "get-queue",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Virtual host (URL-encoded; / is %2F)",
+            "in": "path",
+            "name": "vhost",
+            "required": true,
+            "schema": {
+              "description": "Virtual host (URL-encoded; / is %2F)",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Name (URL-encoded); the default exchange is amq.default",
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "description": "Name (URL-encoded); the default exchange is amq.default",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueueDetail"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Queue detail",
+        "tags": [
+          "Queues"
+        ]
+      },
+      "put": {
+        "description": "Queues cannot be changed after they are declared: declaring an existing queue with other arguments fails (400 inequivalent arg). Use policies for changes.\n\nRequires role: **operator**.",
+        "operationId": "put-queue",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Virtual host (URL-encoded; / is %2F)",
+            "in": "path",
+            "name": "vhost",
+            "required": true,
+            "schema": {
+              "description": "Virtual host (URL-encoded; / is %2F)",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Name (URL-encoded); the default exchange is amq.default",
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "description": "Name (URL-encoded); the default exchange is amq.default",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QueueIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Declare a queue or stream",
+        "tags": [
+          "Queues"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/queues/{vhost}/{name}/purge": {
+      "post": {
+        "description": "Removes every ready message. Unacknowledged messages stay. Streams cannot be purged.\n\nRequires role: **operator**.",
+        "operationId": "purge-queue",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Virtual host (URL-encoded; / is %2F)",
+            "in": "path",
+            "name": "vhost",
+            "required": true,
+            "schema": {
+              "description": "Virtual host (URL-encoded; / is %2F)",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Name (URL-encoded); the default exchange is amq.default",
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "description": "Name (URL-encoded); the default exchange is amq.default",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Purge a queue",
+        "tags": [
+          "Queues"
         ]
       }
     },
@@ -4264,6 +8044,569 @@
         "summary": "List stream protocol connections",
         "tags": [
           "Connections, channels and consumers"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/topic-permissions": {
+      "get": {
+        "description": "Requires role: **viewer**.",
+        "operationId": "list-topic-permissions",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "vhost",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "user",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TopicPermission"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "List topic permissions",
+        "tags": [
+          "RabbitMQ users and permissions"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/topic-permissions/{vhost}/{user}": {
+      "delete": {
+        "description": "Removes the permission for one exchange. RabbitMQ can only delete all of a user's topic permissions in a vhost, so rabmin deletes them and puts the others back; this is not atomic.\n\nRequires role: **admin**.",
+        "operationId": "delete-topic-permission",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "vhost",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "user",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "exchange",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Remove a topic permission",
+        "tags": [
+          "RabbitMQ users and permissions"
+        ]
+      },
+      "put": {
+        "description": "Limits the routing keys a user may publish (write) or bind/consume (read) on one topic exchange.\n\nRequires role: **admin**.",
+        "operationId": "set-topic-permission",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "vhost",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "user",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Set-topic-permissionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Set a topic permission",
+        "tags": [
+          "RabbitMQ users and permissions"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/users": {
+      "get": {
+        "description": "Users with tags, limits and the vhosts they have permissions in. Password hashes are never returned.\n\nRequires role: **viewer**.",
+        "operationId": "list-rabbit-users",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RabbitUser"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "List RabbitMQ users",
+        "tags": [
+          "RabbitMQ users and permissions"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/users/delete": {
+      "post": {
+        "description": "Deletes one or more users with their permissions. Their open connections are closed by RabbitMQ.\n\nRequires role: **admin**.",
+        "operationId": "delete-rabbit-users",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Delete-rabbit-usersRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Delete RabbitMQ users",
+        "tags": [
+          "RabbitMQ users and permissions"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/users/{user}": {
+      "put": {
+        "description": "On an update without a password, the current password is kept: rabmin reads the user's hash from the definitions export and sends it back, because RabbitMQ removes the password of a user updated without one.\n\nRequires role: **admin**.",
+        "operationId": "put-rabbit-user",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "RabbitMQ user name (URL-encoded)",
+            "in": "path",
+            "name": "user",
+            "required": true,
+            "schema": {
+              "description": "RabbitMQ user name (URL-encoded)",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Fail with 409 if the user exists",
+            "explode": false,
+            "in": "query",
+            "name": "create",
+            "schema": {
+              "description": "Fail with 409 if the user exists",
+              "type": "boolean"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RabbitUserIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RabbitUser"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Create or update a RabbitMQ user",
+        "tags": [
+          "RabbitMQ users and permissions"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/vhosts": {
+      "get": {
+        "description": "Requires role: **viewer**.",
+        "operationId": "list-vhosts",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/VHost"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "List virtual hosts",
+        "tags": [
+          "Virtual hosts"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/vhosts/{vhost}": {
+      "delete": {
+        "description": "Deletes the vhost with every queue, exchange, binding, policy and permission in it. Refused (409) while deletion protection is on.\n\nRequires role: **admin**.",
+        "operationId": "delete-vhost",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Virtual host (URL-encoded; / is %2F)",
+            "in": "path",
+            "name": "vhost",
+            "required": true,
+            "schema": {
+              "description": "Virtual host (URL-encoded; / is %2F)",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Delete a virtual host",
+        "tags": [
+          "Virtual hosts"
+        ]
+      },
+      "put": {
+        "description": "Creates the vhost or updates its description, tags and default queue type, then applies deletion protection and limits when given.\n\nRequires role: **admin**.",
+        "operationId": "put-vhost",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Virtual host (URL-encoded; / is %2F)",
+            "in": "path",
+            "name": "vhost",
+            "required": true,
+            "schema": {
+              "description": "Virtual host (URL-encoded; / is %2F)",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VHostIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VHost"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Create or update a virtual host",
+        "tags": [
+          "Virtual hosts"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/vhosts/{vhost}/start": {
+      "post": {
+        "description": "Starts or restarts the vhost on one node, for example after the virtual-hosts health check failed there.\n\nRequires role: **admin**.",
+        "operationId": "start-vhost",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Virtual host (URL-encoded; / is %2F)",
+            "in": "path",
+            "name": "vhost",
+            "required": true,
+            "schema": {
+              "description": "Virtual host (URL-encoded; / is %2F)",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Start-vhostRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Start a virtual host on a node",
+        "tags": [
+          "Virtual hosts"
         ]
       }
     },

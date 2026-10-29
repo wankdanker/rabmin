@@ -192,7 +192,13 @@ func apiErr(err error) error {
 		case ae.Forbidden():
 			return huma.Error403Forbidden("RabbitMQ refused the operation for rabmin's user: " + ae.Reason)
 		case ae.Status == http.StatusNotFound:
+			if ae.Reason != "" && ae.Reason != "Not Found" {
+				return huma.Error404NotFound("not found in RabbitMQ: " + ae.Reason)
+			}
 			return huma.Error404NotFound("not found in RabbitMQ")
+		case ae.Status == http.StatusBadRequest && (strings.HasSuffix(ae.Reason, " not empty") || strings.HasSuffix(ae.Reason, " in use")):
+			// if-empty / if-unused refusals.
+			return huma.Error409Conflict("RabbitMQ: " + ae.Reason)
 		case ae.Status == http.StatusBadRequest:
 			return huma.Error400BadRequest("RabbitMQ: " + ae.Reason)
 		case ae.Status == http.StatusConflict, ae.Status == http.StatusPreconditionFailed:
@@ -201,6 +207,8 @@ func apiErr(err error) error {
 		return huma.NewError(http.StatusBadGateway, ae.Error())
 	}
 	switch {
+	case errors.Is(err, rabbitx.ErrUserNotInDefinitions):
+		return huma.Error409Conflict(err.Error())
 	case errors.Is(err, rabbitx.ErrUnreachable):
 		return huma.NewError(http.StatusBadGateway, err.Error())
 	case errors.Is(err, store.ErrNotFound):

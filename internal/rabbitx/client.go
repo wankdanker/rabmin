@@ -185,7 +185,8 @@ func (c *Client) do(ctx context.Context, base, method, path string, hdr http.Hea
 	for k, v := range hdr {
 		req.Header[k] = v
 	}
-	if body != nil {
+	if body != nil || method == http.MethodPut || method == http.MethodPost {
+		// PUT without a content type answers 415, even with no body.
 		req.Header.Set("Content-Type", "application/json")
 	}
 	if method == http.MethodGet {
@@ -211,10 +212,10 @@ func (c *Client) do(ctx context.Context, base, method, path string, hdr http.Hea
 		ae := &APIError{Status: resp.StatusCode, Body: data, Method: method, URL: redact(base) + path}
 		var e struct {
 			Error  string `json:"error"`
-			Reason string `json:"reason"`
+			Reason any    `json:"reason"`
 		}
 		if json.Unmarshal(data, &e) == nil {
-			ae.Code, ae.Reason = e.Error, e.Reason
+			ae.Code, ae.Reason = e.Error, erlangText(e.Reason)
 		}
 		return ae
 	}
@@ -256,4 +257,48 @@ func AtLeast(version string, major, minor int) bool {
 		return true
 	}
 	return ma > major || (ma == major && mi >= minor)
+}
+
+// erlangText renders an error reason. RabbitMQ sometimes sends Erlang terms
+// as JSON, with strings as arrays of character codes:
+// ["invalid_regexp",[40],[[109,105,...],1]] becomes "invalid_regexp ( missing closing parenthesis 1".
+func erlangText(v any) string {
+	switch t := v.(type) {
+	case nil:
+		return ""
+	case string:
+		return strings.TrimSpace(t)
+	case float64:
+		return strconv.FormatFloat(t, 'f', -1, 64)
+	case []any:
+		if s, ok := charList(t); ok {
+			return s
+		}
+		parts := make([]string, 0, len(t))
+		for _, x := range t {
+			if p := erlangText(x); p != "" {
+				parts = append(parts, p)
+			}
+		}
+		return strings.Join(parts, " ")
+	default:
+		b, _ := json.Marshal(t)
+		return string(b)
+	}
+}
+
+// charList converts a list of printable character codes to a string.
+func charList(l []any) (string, bool) {
+	if len(l) == 0 {
+		return "", false
+	}
+	var b strings.Builder
+	for _, x := range l {
+		f, ok := x.(float64)
+		if !ok || f != float64(int(f)) || f < 9 || f > 0x10FFFF || (f < 32 && f != 9 && f != 10) {
+			return "", false
+		}
+		b.WriteRune(rune(int(f)))
+	}
+	return b.String(), true
 }
