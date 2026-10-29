@@ -4,8 +4,8 @@ rabmin is built in phases. Each phase ends with integration tests passing agains
 
 | Phase | Scope |
 |---|---|
-| 0. Scaffold | natsmin skeleton renamed: auth, users, tokens, audit, UI shell, CI and release pipeline; Docker dev clusters with demo traffic |
-| 1. Observe | Cluster registry with management URL failover and connection test; poller with snapshots and history from the management API, health checks and Prometheus; fleet and cluster overview, nodes, health matrix, connections, channels, consumers |
+| 0. Scaffold ✓ | natsmin skeleton renamed: auth, users, tokens, audit, UI shell, CI and release pipeline; Docker dev clusters with demo traffic |
+| 1. Observe ✓ | Cluster registry with management URL failover and connection test; poller with snapshots and history from the management API, health checks and Prometheus; fleet and cluster overview, nodes, health matrix, connections, channels, consumers |
 | 2. Objects | Vhosts, exchanges, queues (classic, quorum, stream), bindings, publish; users, permissions, limits, policies, parameters; definitions export/import with diff; feature flags and deprecated features |
 | 3. Messages | Stream browser, peek with explicit requeue semantics, move/copy, DLQ workbench, shovels and federation |
 | 4. Operate | Topology map, routing simulator, effective-access explorer, quorum queue placement, executors and maintenance wizard, classic-to-quorum migration |

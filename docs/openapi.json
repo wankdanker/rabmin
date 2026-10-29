@@ -48,6 +48,55 @@
         ],
         "type": "object"
       },
+      "Alarm": {
+        "additionalProperties": false,
+        "properties": {
+          "node": {
+            "type": "string"
+          },
+          "resource": {
+            "enum": [
+              "memory",
+              "disk"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "node",
+          "resource"
+        ],
+        "type": "object"
+      },
+      "Attention": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "description": "node-down, alarm, partition, health, maintenance, version-mismatch, queue-no-consumers, queue-state, queue-members-offline, endpoint",
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "warn",
+              "bad"
+            ],
+            "type": "string"
+          },
+          "subject": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "severity",
+          "kind",
+          "subject",
+          "message"
+        ],
+        "type": "object"
+      },
       "AuditEntry": {
         "additionalProperties": false,
         "properties": {
@@ -106,6 +155,763 @@
         "required": [
           "current",
           "new"
+        ],
+        "type": "object"
+      },
+      "Channel": {
+        "additionalProperties": false,
+        "properties": {
+          "ackRate": {
+            "format": "double",
+            "type": "number"
+          },
+          "acksUncommitted": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "clientName": {
+            "type": "string"
+          },
+          "confirm": {
+            "type": "boolean"
+          },
+          "confirmRate": {
+            "format": "double",
+            "type": "number"
+          },
+          "connection": {
+            "type": "string"
+          },
+          "consumers": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "deliverRate": {
+            "format": "double",
+            "type": "number"
+          },
+          "globalPrefetch": {
+            "description": "Per-channel prefetch (basic.qos global=true)",
+            "format": "int64",
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "node": {
+            "type": "string"
+          },
+          "number": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "prefetch": {
+            "description": "Per-consumer prefetch (basic.qos global=false)",
+            "format": "int64",
+            "type": "integer"
+          },
+          "publishRate": {
+            "format": "double",
+            "type": "number"
+          },
+          "redeliverRate": {
+            "format": "double",
+            "type": "number"
+          },
+          "state": {
+            "type": "string"
+          },
+          "transactional": {
+            "type": "boolean"
+          },
+          "unacked": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "uncommitted": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "unconfirmed": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "unroutableRate": {
+            "format": "double",
+            "type": "number"
+          },
+          "user": {
+            "type": "string"
+          },
+          "vhost": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "connection",
+          "number",
+          "node",
+          "user",
+          "vhost",
+          "state",
+          "consumers",
+          "prefetch",
+          "globalPrefetch",
+          "unacked",
+          "unconfirmed",
+          "uncommitted",
+          "acksUncommitted",
+          "confirm",
+          "transactional",
+          "publishRate",
+          "confirmRate",
+          "deliverRate",
+          "ackRate",
+          "redeliverRate",
+          "unroutableRate"
+        ],
+        "type": "object"
+      },
+      "ChannelDetail": {
+        "additionalProperties": false,
+        "properties": {
+          "channel": {
+            "$ref": "#/components/schemas/Channel"
+          },
+          "consumers": {
+            "items": {
+              "$ref": "#/components/schemas/Consumer"
+            },
+            "type": "array"
+          },
+          "deliveries": {
+            "items": {
+              "$ref": "#/components/schemas/ObjectRate"
+            },
+            "type": "array"
+          },
+          "publishes": {
+            "items": {
+              "$ref": "#/components/schemas/ObjectRate"
+            },
+            "type": "array"
+          },
+          "raw": {}
+        },
+        "required": [
+          "channel",
+          "consumers",
+          "publishes",
+          "deliveries",
+          "raw"
+        ],
+        "type": "object"
+      },
+      "ChannelsPage": {
+        "additionalProperties": false,
+        "properties": {
+          "filtered": {
+            "description": "Items matching the filters",
+            "format": "int64",
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Channel"
+            },
+            "type": "array"
+          },
+          "page": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "pageSize": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "total": {
+            "description": "Items before filtering",
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "filtered",
+          "page",
+          "pageSize"
+        ],
+        "type": "object"
+      },
+      "Close-connectionsRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "clientName": {
+            "description": "Exact client-provided connection name",
+            "type": "string"
+          },
+          "names": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "reason": {
+            "maxLength": 255,
+            "type": "string"
+          },
+          "user": {
+            "type": "string"
+          },
+          "vhost": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "CloseResult": {
+        "additionalProperties": false,
+        "properties": {
+          "closed": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "errors": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "names": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "closed",
+          "names",
+          "errors"
+        ],
+        "type": "object"
+      },
+      "ClusterIn": {
+        "additionalProperties": false,
+        "properties": {
+          "amqpUrls": {
+            "description": "AMQP URLs for messaging features (amqp://host:5672), without credentials",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "auth": {
+            "$ref": "#/components/schemas/CredentialIn",
+            "description": "Management API credentials; required on create"
+          },
+          "credentials": {
+            "description": "Credential profiles to create (create only)",
+            "items": {
+              "$ref": "#/components/schemas/CredentialProfileIn"
+            },
+            "type": "array"
+          },
+          "description": {
+            "maxLength": 1000,
+            "type": "string"
+          },
+          "id": {
+            "description": "Slug used in URLs; derived from name when empty. Cannot change.",
+            "type": "string"
+          },
+          "managementUrls": {
+            "description": "Management API base URLs (http://host:15672), ideally one per node: rabmin fails over between them and runs node-local health checks through each",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "type": "array"
+          },
+          "name": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "prometheusUrls": {
+            "description": "rabbitmq_prometheus base URLs (http://host:15692), one per node",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "removeTls": {
+            "type": "boolean"
+          },
+          "tls": {
+            "$ref": "#/components/schemas/TLSIn"
+          }
+        },
+        "required": [
+          "name",
+          "managementUrls"
+        ],
+        "type": "object"
+      },
+      "ClusterOut": {
+        "additionalProperties": false,
+        "properties": {
+          "amqpUrls": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "auth": {
+            "$ref": "#/components/schemas/CredentialOut"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "credentials": {
+            "items": {
+              "$ref": "#/components/schemas/CredentialProfileOut"
+            },
+            "type": "array"
+          },
+          "description": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "managementUrls": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "name": {
+            "type": "string"
+          },
+          "prometheusUrls": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ClusterStatus"
+          },
+          "tls": {
+            "$ref": "#/components/schemas/TLSOut"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "managementUrls",
+          "prometheusUrls",
+          "amqpUrls",
+          "auth",
+          "credentials",
+          "status",
+          "createdAt",
+          "updatedAt"
+        ],
+        "type": "object"
+      },
+      "ClusterStatus": {
+        "additionalProperties": false,
+        "properties": {
+          "alarms": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "attention": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "clusterName": {
+            "description": "The name RabbitMQ reports",
+            "type": "string"
+          },
+          "connected": {
+            "type": "boolean"
+          },
+          "connections": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "consumers": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "deliverRate": {
+            "format": "double",
+            "type": "number"
+          },
+          "error": {
+            "type": "string"
+          },
+          "healthy": {
+            "description": "Running nodes without alarms, partitions or failing health checks",
+            "format": "int64",
+            "type": "integer"
+          },
+          "lastPoll": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "messages": {
+            "format": "double",
+            "type": "number"
+          },
+          "nodes": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "nodesRunning": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "publishRate": {
+            "format": "double",
+            "type": "number"
+          },
+          "queues": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "ratesSource": {
+            "type": "string"
+          },
+          "versions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "connected",
+          "versions",
+          "nodes",
+          "nodesRunning",
+          "healthy",
+          "alarms",
+          "attention",
+          "connections",
+          "queues",
+          "consumers",
+          "messages",
+          "publishRate",
+          "deliverRate",
+          "ratesSource"
+        ],
+        "type": "object"
+      },
+      "Connection": {
+        "additionalProperties": false,
+        "properties": {
+          "authMechanism": {
+            "type": "string"
+          },
+          "channelMax": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "channels": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "clientName": {
+            "description": "connection_name client property",
+            "type": "string"
+          },
+          "connectedAt": {
+            "description": "Unix milliseconds",
+            "format": "int64",
+            "type": "integer"
+          },
+          "frameMax": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "heartbeat": {
+            "description": "Heartbeat timeout in seconds",
+            "format": "int64",
+            "type": "integer"
+          },
+          "host": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "node": {
+            "type": "string"
+          },
+          "peerHost": {
+            "type": "string"
+          },
+          "peerPort": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "platform": {
+            "type": "string"
+          },
+          "port": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "product": {
+            "type": "string"
+          },
+          "protocol": {
+            "type": "string"
+          },
+          "recvBytes": {
+            "format": "double",
+            "type": "number"
+          },
+          "recvRate": {
+            "description": "Bytes per second from the client",
+            "format": "double",
+            "type": "number"
+          },
+          "sendBytes": {
+            "format": "double",
+            "type": "number"
+          },
+          "sendPending": {
+            "format": "double",
+            "type": "number"
+          },
+          "sendRate": {
+            "description": "Bytes per second to the client",
+            "format": "double",
+            "type": "number"
+          },
+          "state": {
+            "type": "string"
+          },
+          "tls": {
+            "type": "boolean"
+          },
+          "tlsProtocol": {
+            "type": "string"
+          },
+          "type": {
+            "description": "network or direct",
+            "type": "string"
+          },
+          "user": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "vhost": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "user",
+          "vhost",
+          "node",
+          "protocol",
+          "type",
+          "state",
+          "channels",
+          "connectedAt",
+          "tls",
+          "heartbeat",
+          "frameMax",
+          "channelMax",
+          "recvBytes",
+          "sendBytes",
+          "recvRate",
+          "sendRate",
+          "sendPending"
+        ],
+        "type": "object"
+      },
+      "ConnectionDetail": {
+        "additionalProperties": false,
+        "properties": {
+          "channels": {
+            "items": {
+              "$ref": "#/components/schemas/Channel"
+            },
+            "type": "array"
+          },
+          "clientProperties": {
+            "description": "All client properties, including capabilities"
+          },
+          "connection": {
+            "$ref": "#/components/schemas/Connection"
+          },
+          "raw": {
+            "description": "The management API object"
+          }
+        },
+        "required": [
+          "connection",
+          "clientProperties",
+          "raw",
+          "channels"
+        ],
+        "type": "object"
+      },
+      "ConnectionsPage": {
+        "additionalProperties": false,
+        "properties": {
+          "filtered": {
+            "description": "Items matching the filters",
+            "format": "int64",
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Connection"
+            },
+            "type": "array"
+          },
+          "page": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "pageSize": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "total": {
+            "description": "Items before filtering",
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "filtered",
+          "page",
+          "pageSize"
+        ],
+        "type": "object"
+      },
+      "Consumer": {
+        "additionalProperties": false,
+        "properties": {
+          "ackRequired": {
+            "type": "boolean"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "arguments": {},
+          "channel": {
+            "type": "string"
+          },
+          "clientName": {
+            "type": "string"
+          },
+          "connection": {
+            "type": "string"
+          },
+          "exclusive": {
+            "type": "boolean"
+          },
+          "node": {
+            "type": "string"
+          },
+          "prefetch": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "queue": {
+            "type": "string"
+          },
+          "status": {
+            "description": "up, single_active (the active one) or waiting",
+            "type": "string"
+          },
+          "tag": {
+            "type": "string"
+          },
+          "timeoutMs": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "user": {
+            "type": "string"
+          },
+          "vhost": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "tag",
+          "vhost",
+          "queue",
+          "channel",
+          "connection",
+          "node",
+          "user",
+          "ackRequired",
+          "prefetch",
+          "exclusive",
+          "active",
+          "status",
+          "arguments"
+        ],
+        "type": "object"
+      },
+      "ConsumersPage": {
+        "additionalProperties": false,
+        "properties": {
+          "filtered": {
+            "description": "Items matching the filters",
+            "format": "int64",
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Consumer"
+            },
+            "type": "array"
+          },
+          "page": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "pageSize": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "total": {
+            "description": "Items before filtering",
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "filtered",
+          "page",
+          "pageSize"
         ],
         "type": "object"
       },
@@ -221,6 +1027,106 @@
         ],
         "type": "object"
       },
+      "CredentialIn": {
+        "additionalProperties": false,
+        "properties": {
+          "password": {
+            "type": "string"
+          },
+          "token": {
+            "type": "string"
+          },
+          "type": {
+            "description": "basic: username and password; bearer: an OAuth2 access token for brokers whose management API uses OAuth2",
+            "enum": [
+              "basic",
+              "bearer"
+            ],
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type"
+        ],
+        "type": "object"
+      },
+      "CredentialOut": {
+        "additionalProperties": false,
+        "properties": {
+          "hasPassword": {
+            "type": "boolean"
+          },
+          "hasToken": {
+            "type": "boolean"
+          },
+          "type": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "hasPassword",
+          "hasToken"
+        ],
+        "type": "object"
+      },
+      "CredentialProfileIn": {
+        "additionalProperties": false,
+        "properties": {
+          "auth": {
+            "$ref": "#/components/schemas/CredentialIn"
+          },
+          "id": {
+            "description": "Slug; derived from name when empty",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "type": "object"
+      },
+      "CredentialProfileOut": {
+        "additionalProperties": false,
+        "properties": {
+          "auth": {
+            "$ref": "#/components/schemas/CredentialOut"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "auth",
+          "createdAt",
+          "updatedAt"
+        ],
+        "type": "object"
+      },
       "CredsBody": {
         "additionalProperties": false,
         "properties": {
@@ -238,6 +1144,33 @@
         "required": [
           "username",
           "password"
+        ],
+        "type": "object"
+      },
+      "Endpoint": {
+        "additionalProperties": false,
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "latencyMs": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "node": {
+            "type": "string"
+          },
+          "ok": {
+            "type": "boolean"
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "url",
+          "ok",
+          "latencyMs"
         ],
         "type": "object"
       },
@@ -310,6 +1243,119 @@
         },
         "type": "object"
       },
+      "HealthResult": {
+        "additionalProperties": false,
+        "properties": {
+          "check": {
+            "type": "string"
+          },
+          "detail": {},
+          "node": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "ok",
+              "failed",
+              "error"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "node",
+          "check",
+          "status"
+        ],
+        "type": "object"
+      },
+      "Info": {
+        "additionalProperties": false,
+        "properties": {
+          "clusterName": {
+            "type": "string"
+          },
+          "defaultQueueType": {
+            "type": "string"
+          },
+          "erlangFullVersion": {
+            "type": "string"
+          },
+          "erlangVersion": {
+            "type": "string"
+          },
+          "managementVersion": {
+            "type": "string"
+          },
+          "productName": {
+            "type": "string"
+          },
+          "productVersion": {
+            "type": "string"
+          },
+          "rabbitmqVersion": {
+            "type": "string"
+          },
+          "ratesMode": {
+            "type": "string"
+          },
+          "statsDisabled": {
+            "type": "boolean"
+          },
+          "versions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "clusterName",
+          "productName",
+          "productVersion",
+          "rabbitmqVersion",
+          "managementVersion",
+          "erlangVersion",
+          "erlangFullVersion",
+          "ratesMode",
+          "statsDisabled",
+          "defaultQueueType",
+          "versions"
+        ],
+        "type": "object"
+      },
+      "Listener": {
+        "additionalProperties": false,
+        "properties": {
+          "ip": {
+            "type": "string"
+          },
+          "node": {
+            "type": "string"
+          },
+          "port": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "protocol": {
+            "type": "string"
+          },
+          "tls": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "node",
+          "protocol",
+          "ip",
+          "port",
+          "tls"
+        ],
+        "type": "object"
+      },
       "MeBody": {
         "additionalProperties": false,
         "properties": {
@@ -335,6 +1381,645 @@
         ],
         "type": "object"
       },
+      "MemoryPart": {
+        "additionalProperties": false,
+        "properties": {
+          "bytes": {
+            "format": "double",
+            "type": "number"
+          },
+          "category": {
+            "type": "string"
+          },
+          "group": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "category",
+          "group",
+          "bytes"
+        ],
+        "type": "object"
+      },
+      "NodeDetail": {
+        "additionalProperties": false,
+        "properties": {
+          "memory": {
+            "items": {
+              "$ref": "#/components/schemas/MemoryPart"
+            },
+            "type": "array"
+          },
+          "memoryStrategy": {
+            "type": "string"
+          },
+          "memoryTotal": {
+            "format": "double",
+            "type": "number"
+          },
+          "node": {
+            "$ref": "#/components/schemas/NodeInfo"
+          },
+          "raw": {}
+        },
+        "required": [
+          "node",
+          "memory",
+          "memoryTotal",
+          "memoryStrategy",
+          "raw"
+        ],
+        "type": "object"
+      },
+      "NodeInfo": {
+        "additionalProperties": false,
+        "properties": {
+          "beingDrained": {
+            "description": "In maintenance mode",
+            "type": "boolean"
+          },
+          "diskAlarm": {
+            "type": "boolean"
+          },
+          "diskFree": {
+            "format": "double",
+            "type": "number"
+          },
+          "diskFreeLimit": {
+            "format": "double",
+            "type": "number"
+          },
+          "enabledPlugins": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "endpoint": {
+            "type": "string"
+          },
+          "erlangVersion": {
+            "type": "string"
+          },
+          "fdTotal": {
+            "format": "double",
+            "type": "number"
+          },
+          "fdUsed": {
+            "format": "double",
+            "type": "number"
+          },
+          "healthy": {
+            "type": "boolean"
+          },
+          "memAlarm": {
+            "type": "boolean"
+          },
+          "memLimit": {
+            "format": "double",
+            "type": "number"
+          },
+          "memUsed": {
+            "format": "double",
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "partitions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "procTotal": {
+            "format": "double",
+            "type": "number"
+          },
+          "procUsed": {
+            "format": "double",
+            "type": "number"
+          },
+          "processors": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "rabbitmqVersion": {
+            "type": "string"
+          },
+          "runQueue": {
+            "format": "double",
+            "type": "number"
+          },
+          "running": {
+            "type": "boolean"
+          },
+          "type": {
+            "type": "string"
+          },
+          "uptimeMs": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "running",
+          "type",
+          "rabbitmqVersion",
+          "erlangVersion",
+          "uptimeMs",
+          "memUsed",
+          "memLimit",
+          "memAlarm",
+          "diskFree",
+          "diskFreeLimit",
+          "diskAlarm",
+          "fdUsed",
+          "fdTotal",
+          "procUsed",
+          "procTotal",
+          "processors",
+          "runQueue",
+          "partitions",
+          "beingDrained",
+          "enabledPlugins",
+          "healthy"
+        ],
+        "type": "object"
+      },
+      "ObjectRate": {
+        "additionalProperties": false,
+        "properties": {
+          "count": {
+            "format": "double",
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "rate": {
+            "format": "double",
+            "type": "number"
+          },
+          "vhost": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "vhost",
+          "name",
+          "rate",
+          "count"
+        ],
+        "type": "object"
+      },
+      "PromSummary": {
+        "additionalProperties": false,
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "node": {
+            "type": "string"
+          },
+          "ok": {
+            "type": "boolean"
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "url",
+          "ok"
+        ],
+        "type": "object"
+      },
+      "QueueBrief": {
+        "additionalProperties": false,
+        "properties": {
+          "consumers": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "deliverRate": {
+            "format": "double",
+            "type": "number"
+          },
+          "leader": {
+            "type": "string"
+          },
+          "members": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "messages": {
+            "format": "double",
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "node": {
+            "type": "string"
+          },
+          "online": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "publishRate": {
+            "format": "double",
+            "type": "number"
+          },
+          "ready": {
+            "format": "double",
+            "type": "number"
+          },
+          "state": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "unacked": {
+            "format": "double",
+            "type": "number"
+          },
+          "vhost": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "vhost",
+          "name",
+          "type",
+          "state",
+          "messages",
+          "ready",
+          "unacked",
+          "consumers",
+          "publishRate",
+          "deliverRate",
+          "members",
+          "online"
+        ],
+        "type": "object"
+      },
+      "RatePoint": {
+        "additionalProperties": false,
+        "properties": {
+          "ack": {
+            "format": "double",
+            "type": "number"
+          },
+          "chanClosed": {
+            "format": "double",
+            "type": "number"
+          },
+          "chanCreated": {
+            "format": "double",
+            "type": "number"
+          },
+          "channels": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "confirm": {
+            "format": "double",
+            "type": "number"
+          },
+          "connClosed": {
+            "format": "double",
+            "type": "number"
+          },
+          "connCreated": {
+            "format": "double",
+            "type": "number"
+          },
+          "connections": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "consumers": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "deliver": {
+            "format": "double",
+            "type": "number"
+          },
+          "publish": {
+            "format": "double",
+            "type": "number"
+          },
+          "queueCreated": {
+            "format": "double",
+            "type": "number"
+          },
+          "queueDeleted": {
+            "format": "double",
+            "type": "number"
+          },
+          "queues": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "ready": {
+            "format": "double",
+            "type": "number"
+          },
+          "redeliver": {
+            "format": "double",
+            "type": "number"
+          },
+          "t": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "unacked": {
+            "format": "double",
+            "type": "number"
+          },
+          "unroutable": {
+            "format": "double",
+            "type": "number"
+          }
+        },
+        "required": [
+          "t",
+          "publish",
+          "deliver",
+          "ack",
+          "confirm",
+          "redeliver",
+          "unroutable",
+          "ready",
+          "unacked",
+          "connections",
+          "channels",
+          "queues",
+          "consumers",
+          "connCreated",
+          "connClosed",
+          "chanCreated",
+          "chanClosed",
+          "queueCreated",
+          "queueDeleted"
+        ],
+        "type": "object"
+      },
+      "Rates": {
+        "additionalProperties": false,
+        "properties": {
+          "ack": {
+            "format": "double",
+            "type": "number"
+          },
+          "chanClosed": {
+            "format": "double",
+            "type": "number"
+          },
+          "chanCreated": {
+            "format": "double",
+            "type": "number"
+          },
+          "confirm": {
+            "format": "double",
+            "type": "number"
+          },
+          "connClosed": {
+            "format": "double",
+            "type": "number"
+          },
+          "connCreated": {
+            "format": "double",
+            "type": "number"
+          },
+          "deliver": {
+            "description": "Deliveries to consumers with manual ack",
+            "format": "double",
+            "type": "number"
+          },
+          "deliverGet": {
+            "description": "All deliveries and gets",
+            "format": "double",
+            "type": "number"
+          },
+          "deliverNoAck": {
+            "description": "Deliveries to consumers with automatic ack",
+            "format": "double",
+            "type": "number"
+          },
+          "diskReads": {
+            "format": "double",
+            "type": "number"
+          },
+          "diskWrites": {
+            "format": "double",
+            "type": "number"
+          },
+          "dropUnroutable": {
+            "format": "double",
+            "type": "number"
+          },
+          "get": {
+            "format": "double",
+            "type": "number"
+          },
+          "getEmpty": {
+            "format": "double",
+            "type": "number"
+          },
+          "getNoAck": {
+            "format": "double",
+            "type": "number"
+          },
+          "publish": {
+            "format": "double",
+            "type": "number"
+          },
+          "queueCreated": {
+            "format": "double",
+            "type": "number"
+          },
+          "queueDeclared": {
+            "format": "double",
+            "type": "number"
+          },
+          "queueDeleted": {
+            "format": "double",
+            "type": "number"
+          },
+          "redeliver": {
+            "format": "double",
+            "type": "number"
+          },
+          "returnUnroutable": {
+            "format": "double",
+            "type": "number"
+          }
+        },
+        "required": [
+          "publish",
+          "confirm",
+          "deliver",
+          "deliverNoAck",
+          "deliverGet",
+          "get",
+          "getNoAck",
+          "getEmpty",
+          "redeliver",
+          "ack",
+          "returnUnroutable",
+          "dropUnroutable",
+          "diskReads",
+          "diskWrites",
+          "connCreated",
+          "connClosed",
+          "chanCreated",
+          "chanClosed",
+          "queueCreated",
+          "queueDeclared",
+          "queueDeleted"
+        ],
+        "type": "object"
+      },
+      "Set-cluster-nameRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "maxLength": 255,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "type": "object"
+      },
+      "Snapshot": {
+        "additionalProperties": false,
+        "properties": {
+          "alarms": {
+            "items": {
+              "$ref": "#/components/schemas/Alarm"
+            },
+            "type": "array"
+          },
+          "attention": {
+            "items": {
+              "$ref": "#/components/schemas/Attention"
+            },
+            "type": "array"
+          },
+          "clusterId": {
+            "type": "string"
+          },
+          "connected": {
+            "type": "boolean"
+          },
+          "contexts": {
+            "items": {
+              "$ref": "#/components/schemas/WebContext"
+            },
+            "type": "array"
+          },
+          "endpoints": {
+            "items": {
+              "$ref": "#/components/schemas/Endpoint"
+            },
+            "type": "array"
+          },
+          "error": {
+            "type": "string"
+          },
+          "health": {
+            "items": {
+              "$ref": "#/components/schemas/HealthResult"
+            },
+            "type": "array"
+          },
+          "healthChecks": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "info": {
+            "$ref": "#/components/schemas/Info"
+          },
+          "listeners": {
+            "items": {
+              "$ref": "#/components/schemas/Listener"
+            },
+            "type": "array"
+          },
+          "nodes": {
+            "items": {
+              "$ref": "#/components/schemas/NodeInfo"
+            },
+            "type": "array"
+          },
+          "prometheus": {
+            "items": {
+              "$ref": "#/components/schemas/PromSummary"
+            },
+            "type": "array"
+          },
+          "queues": {
+            "description": "The deepest queues (up to 500 inspected), plus any with problems",
+            "items": {
+              "$ref": "#/components/schemas/QueueBrief"
+            },
+            "type": "array"
+          },
+          "rates": {
+            "$ref": "#/components/schemas/Rates"
+          },
+          "ratesSource": {
+            "enum": [
+              "management",
+              "prometheus",
+              "none"
+            ],
+            "type": "string"
+          },
+          "time": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "totals": {
+            "$ref": "#/components/schemas/Totals"
+          }
+        },
+        "required": [
+          "clusterId",
+          "time",
+          "connected",
+          "info",
+          "totals",
+          "rates",
+          "ratesSource",
+          "nodes",
+          "alarms",
+          "health",
+          "healthChecks",
+          "listeners",
+          "contexts",
+          "endpoints",
+          "queues",
+          "attention",
+          "prometheus"
+        ],
+        "type": "object"
+      },
       "StatusBody": {
         "additionalProperties": false,
         "properties": {
@@ -353,6 +2038,344 @@
           "version",
           "needsSetup",
           "authenticated"
+        ],
+        "type": "object"
+      },
+      "StreamConnection": {
+        "additionalProperties": false,
+        "properties": {
+          "clientName": {
+            "type": "string"
+          },
+          "connectedAt": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "consumers": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "heartbeat": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "node": {
+            "type": "string"
+          },
+          "peerHost": {
+            "type": "string"
+          },
+          "peerPort": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "publishers": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "recvBytes": {
+            "format": "double",
+            "type": "number"
+          },
+          "recvRate": {
+            "format": "double",
+            "type": "number"
+          },
+          "sendBytes": {
+            "format": "double",
+            "type": "number"
+          },
+          "sendRate": {
+            "format": "double",
+            "type": "number"
+          },
+          "tls": {
+            "type": "boolean"
+          },
+          "user": {
+            "type": "string"
+          },
+          "vhost": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "user",
+          "vhost",
+          "node",
+          "connectedAt",
+          "tls",
+          "heartbeat",
+          "recvBytes",
+          "sendBytes",
+          "recvRate",
+          "sendRate",
+          "publishers",
+          "consumers"
+        ],
+        "type": "object"
+      },
+      "StreamConnectionsPage": {
+        "additionalProperties": false,
+        "properties": {
+          "available": {
+            "type": "boolean"
+          },
+          "filtered": {
+            "description": "Items matching the filters",
+            "format": "int64",
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/StreamConnection"
+            },
+            "type": "array"
+          },
+          "page": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "pageSize": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "total": {
+            "description": "Items before filtering",
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "available",
+          "total",
+          "filtered",
+          "page",
+          "pageSize"
+        ],
+        "type": "object"
+      },
+      "TLSIn": {
+        "additionalProperties": false,
+        "properties": {
+          "ca": {
+            "description": "PEM CA bundle",
+            "type": "string"
+          },
+          "cert": {
+            "description": "PEM client certificate",
+            "type": "string"
+          },
+          "insecureSkipVerify": {
+            "type": "boolean"
+          },
+          "key": {
+            "description": "PEM client key",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "TLSOut": {
+        "additionalProperties": false,
+        "properties": {
+          "ca": {
+            "type": "string"
+          },
+          "cert": {
+            "type": "string"
+          },
+          "hasKey": {
+            "type": "boolean"
+          },
+          "insecureSkipVerify": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "hasKey",
+          "insecureSkipVerify"
+        ],
+        "type": "object"
+      },
+      "Test-cluster-connectionRequest": {
+        "additionalProperties": false,
+        "properties": {
+          "auth": {
+            "$ref": "#/components/schemas/CredentialIn"
+          },
+          "clusterId": {
+            "type": "string"
+          },
+          "credentialId": {
+            "type": "string"
+          },
+          "managementUrls": {
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "type": "array"
+          },
+          "prometheusUrls": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "tls": {
+            "$ref": "#/components/schemas/TLSIn"
+          }
+        },
+        "required": [
+          "managementUrls"
+        ],
+        "type": "object"
+      },
+      "TestResult": {
+        "additionalProperties": false,
+        "properties": {
+          "canMonitor": {
+            "description": "The user can see every vhost's objects (administrator or monitoring tag)",
+            "type": "boolean"
+          },
+          "clusterName": {
+            "type": "string"
+          },
+          "endpoints": {
+            "items": {
+              "$ref": "#/components/schemas/Endpoint"
+            },
+            "type": "array"
+          },
+          "erlangVersion": {
+            "type": "string"
+          },
+          "error": {
+            "type": "string"
+          },
+          "isAdministrator": {
+            "type": "boolean"
+          },
+          "nodes": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "ok": {
+            "type": "boolean"
+          },
+          "plugins": {
+            "description": "Plugins enabled on any node",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "productName": {
+            "type": "string"
+          },
+          "prometheus": {
+            "items": {
+              "$ref": "#/components/schemas/PromSummary"
+            },
+            "type": "array"
+          },
+          "rabbitmqVersion": {
+            "type": "string"
+          },
+          "statsDisabled": {
+            "type": "boolean"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "user": {
+            "type": "string"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "ok",
+          "nodes",
+          "tags",
+          "isAdministrator",
+          "canMonitor",
+          "plugins",
+          "statsDisabled",
+          "endpoints",
+          "prometheus",
+          "warnings"
+        ],
+        "type": "object"
+      },
+      "Totals": {
+        "additionalProperties": false,
+        "properties": {
+          "channels": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "connections": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "consumers": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "exchanges": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "messages": {
+            "format": "double",
+            "type": "number"
+          },
+          "messagesReady": {
+            "format": "double",
+            "type": "number"
+          },
+          "messagesUnacked": {
+            "format": "double",
+            "type": "number"
+          },
+          "nodes": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "nodesRunning": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "queues": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "nodes",
+          "nodesRunning",
+          "connections",
+          "channels",
+          "exchanges",
+          "queues",
+          "consumers",
+          "messages",
+          "messagesReady",
+          "messagesUnacked"
         ],
         "type": "object"
       },
@@ -405,6 +2428,37 @@
           "role",
           "disabled",
           "createdAt"
+        ],
+        "type": "object"
+      },
+      "WebContext": {
+        "additionalProperties": false,
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "node": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "port": {
+            "type": "string"
+          },
+          "protocol": {
+            "type": "string"
+          },
+          "tls": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "node",
+          "description",
+          "path",
+          "port",
+          "tls"
         ],
         "type": "object"
       }
@@ -673,6 +2727,1543 @@
         "summary": "Change your password",
         "tags": [
           "Auth"
+        ]
+      }
+    },
+    "/v1/clusters": {
+      "get": {
+        "description": "Requires role: **viewer**.",
+        "operationId": "list-clusters",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ClusterOut"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "List clusters",
+        "tags": [
+          "Clusters"
+        ]
+      },
+      "post": {
+        "description": "Requires role: **admin**.",
+        "operationId": "create-cluster",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClusterIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClusterOut"
+                }
+              }
+            },
+            "description": "Created"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Register a cluster",
+        "tags": [
+          "Clusters"
+        ]
+      }
+    },
+    "/v1/clusters/test": {
+      "post": {
+        "description": "Connects with the given settings without saving them and reports versions, plugins and what the user may do. Pass clusterId (and credentialId) to reuse stored secrets for fields left empty.\n\nRequires role: **admin**.",
+        "operationId": "test-cluster-connection",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Test-cluster-connectionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestResult"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Test connection settings",
+        "tags": [
+          "Clusters"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}": {
+      "delete": {
+        "description": "Forgets the cluster and its stored credentials. Nothing changes on the brokers.\n\nRequires role: **admin**.",
+        "operationId": "delete-cluster",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Remove a cluster",
+        "tags": [
+          "Clusters"
+        ]
+      },
+      "get": {
+        "description": "Requires role: **viewer**.",
+        "operationId": "get-cluster",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClusterOut"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Get a cluster",
+        "tags": [
+          "Clusters"
+        ]
+      },
+      "put": {
+        "description": "Requires role: **admin**.",
+        "operationId": "update-cluster",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClusterIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClusterOut"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Update a cluster",
+        "tags": [
+          "Clusters"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/channels": {
+      "get": {
+        "description": "Rates are averages over the last 30 seconds.\n\nRequires role: **viewer**.",
+        "operationId": "list-channels",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Case-insensitive substring matched against names, client name, user, vhost and node",
+            "explode": false,
+            "in": "query",
+            "name": "q",
+            "schema": {
+              "description": "Case-insensitive substring matched against names, client name, user, vhost and node",
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "vhost",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "user",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "node",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Field to sort by (a JSON field name of the items)",
+            "explode": false,
+            "in": "query",
+            "name": "sort",
+            "schema": {
+              "description": "Field to sort by (a JSON field name of the items)",
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "desc",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "default": 1,
+              "format": "int64",
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "pageSize",
+            "schema": {
+              "default": 100,
+              "format": "int64",
+              "maximum": 2000,
+              "minimum": 1,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChannelsPage"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "List channels",
+        "tags": [
+          "Connections, channels and consumers"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/channels/{name}": {
+      "get": {
+        "description": "Prefetch, unacked and unconfirmed counts, consumers, and (in the detailed rates mode) publishing per exchange and delivery per queue.\n\nRequires role: **viewer**.",
+        "operationId": "get-channel",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Name as listed by the management API (URL-encoded)",
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "description": "Name as listed by the management API (URL-encoded)",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChannelDetail"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Channel detail",
+        "tags": [
+          "Connections, channels and consumers"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/cluster-name": {
+      "put": {
+        "description": "Sets the name RabbitMQ reports (`cluster_name`). rabmin's own display name is changed with update-cluster.\n\nRequires role: **admin**.",
+        "operationId": "set-cluster-name",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Set-cluster-nameRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Rename the RabbitMQ cluster",
+        "tags": [
+          "Monitoring"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/connections": {
+      "get": {
+        "description": "AMQP 0-9-1, AMQP 1.0, MQTT and STOMP connections (and direct connections such as shovels). Rates are averages over the last 30 seconds.\n\nRequires role: **viewer**.",
+        "operationId": "list-connections",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Case-insensitive substring matched against names, client name, user, vhost and node",
+            "explode": false,
+            "in": "query",
+            "name": "q",
+            "schema": {
+              "description": "Case-insensitive substring matched against names, client name, user, vhost and node",
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "vhost",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "user",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "node",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Field to sort by (a JSON field name of the items)",
+            "explode": false,
+            "in": "query",
+            "name": "sort",
+            "schema": {
+              "description": "Field to sort by (a JSON field name of the items)",
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "desc",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "default": 1,
+              "format": "int64",
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "pageSize",
+            "schema": {
+              "default": 100,
+              "format": "int64",
+              "maximum": 2000,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Substring of the protocol, e.g. AMQP 0-9-1, MQTT",
+            "explode": false,
+            "in": "query",
+            "name": "protocol",
+            "schema": {
+              "description": "Substring of the protocol, e.g. AMQP 0-9-1, MQTT",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectionsPage"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "List connections",
+        "tags": [
+          "Connections, channels and consumers"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/connections/close": {
+      "post": {
+        "description": "Closes every connection matching all the given filters (at least one is required): explicit names, a user, a vhost, or a client name.\n\nRequires role: **operator**.",
+        "operationId": "close-connections",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Close-connectionsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CloseResult"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Close connections in bulk",
+        "tags": [
+          "Connections, channels and consumers"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/connections/{name}": {
+      "delete": {
+        "description": "The client is told the reason in the connection.close frame.\n\nRequires role: **operator**.",
+        "operationId": "close-connection",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Name as listed by the management API (URL-encoded)",
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "description": "Name as listed by the management API (URL-encoded)",
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "reason",
+            "schema": {
+              "maxLength": 255,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Close a connection",
+        "tags": [
+          "Connections, channels and consumers"
+        ]
+      },
+      "get": {
+        "description": "Client properties and capabilities, TLS, negotiated limits, rates and the connection's channels.\n\nRequires role: **viewer**.",
+        "operationId": "get-connection",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Name as listed by the management API (URL-encoded)",
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "description": "Name as listed by the management API (URL-encoded)",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectionDetail"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Connection detail",
+        "tags": [
+          "Connections, channels and consumers"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/consumers": {
+      "get": {
+        "description": "Requires role: **viewer**.",
+        "operationId": "list-consumers",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Case-insensitive substring matched against names, client name, user, vhost and node",
+            "explode": false,
+            "in": "query",
+            "name": "q",
+            "schema": {
+              "description": "Case-insensitive substring matched against names, client name, user, vhost and node",
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "vhost",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "user",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "node",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Field to sort by (a JSON field name of the items)",
+            "explode": false,
+            "in": "query",
+            "name": "sort",
+            "schema": {
+              "description": "Field to sort by (a JSON field name of the items)",
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "desc",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "default": 1,
+              "format": "int64",
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "pageSize",
+            "schema": {
+              "default": 100,
+              "format": "int64",
+              "maximum": 2000,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Exact queue name",
+            "explode": false,
+            "in": "query",
+            "name": "queue",
+            "schema": {
+              "description": "Exact queue name",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsumersPage"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "List consumers",
+        "tags": [
+          "Connections, channels and consumers"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/credentials": {
+      "get": {
+        "description": "Requires role: **viewer**.",
+        "operationId": "list-credentials",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CredentialProfileOut"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "List credential profiles",
+        "tags": [
+          "Clusters"
+        ]
+      },
+      "post": {
+        "description": "An extra RabbitMQ user for this cluster, so browsing and publishing can run with less privilege than the management user.\n\nRequires role: **admin**.",
+        "operationId": "create-credential",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CredentialProfileIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CredentialProfileOut"
+                }
+              }
+            },
+            "description": "Created"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Add a credential profile",
+        "tags": [
+          "Clusters"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/credentials/{credential}": {
+      "delete": {
+        "description": "Requires role: **admin**.",
+        "operationId": "delete-credential",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Credential profile id",
+            "in": "path",
+            "name": "credential",
+            "required": true,
+            "schema": {
+              "description": "Credential profile id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Remove a credential profile",
+        "tags": [
+          "Clusters"
+        ]
+      },
+      "put": {
+        "description": "Requires role: **admin**.",
+        "operationId": "update-credential",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Credential profile id",
+            "in": "path",
+            "name": "credential",
+            "required": true,
+            "schema": {
+              "description": "Credential profile id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CredentialProfileIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CredentialProfileOut"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Update a credential profile",
+        "tags": [
+          "Clusters"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/events": {
+      "get": {
+        "description": "Server-sent events: a `snapshot` event after every poll. Requires role: **viewer**.",
+        "operationId": "stream-snapshots",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "description": "Each oneOf object in the array represents one possible Server Sent Events (SSE) message, serialized as UTF-8 text according to the SSE specification.",
+                  "items": {
+                    "oneOf": [
+                      {
+                        "properties": {
+                          "data": {
+                            "$ref": "#/components/schemas/Snapshot"
+                          },
+                          "event": {
+                            "const": "snapshot",
+                            "description": "The event name.",
+                            "type": "string"
+                          },
+                          "id": {
+                            "description": "The event ID.",
+                            "oneOf": [
+                              {
+                                "type": "integer"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          "retry": {
+                            "description": "The retry time in milliseconds.",
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "data",
+                          "event"
+                        ],
+                        "title": "Event snapshot",
+                        "type": "object"
+                      }
+                    ]
+                  },
+                  "title": "Server Sent Events",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Live snapshots (SSE)",
+        "tags": [
+          "Monitoring"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/history": {
+      "get": {
+        "description": "Rates and counts from every poll since rabmin started (in memory, up to 720 points).\n\nRequires role: **viewer**.",
+        "operationId": "get-history",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RatePoint"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Rate history",
+        "tags": [
+          "Monitoring"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/nodes/{node}": {
+      "get": {
+        "description": "A node with its memory breakdown and the raw management object (applications, config files, auth mechanisms, exchange types...).\n\nRequires role: **viewer**.",
+        "operationId": "get-node",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Erlang node name, e.g. rabbit@host",
+            "in": "path",
+            "name": "node",
+            "required": true,
+            "schema": {
+              "description": "Erlang node name, e.g. rabbit@host",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NodeDetail"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Node detail",
+        "tags": [
+          "Monitoring"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/nodes/{node}/reset-stats": {
+      "post": {
+        "description": "Clears the management statistics database on one node (the built-in UI's \"Reset stats\"). Messages and objects are not affected.\n\nRequires role: **admin**.",
+        "operationId": "reset-node-stats",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Erlang node name, e.g. rabbit@host",
+            "in": "path",
+            "name": "node",
+            "required": true,
+            "schema": {
+              "description": "Erlang node name, e.g. rabbit@host",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Reset a node's statistics",
+        "tags": [
+          "Monitoring"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/reset-stats": {
+      "post": {
+        "description": "Clears the management statistics database on all nodes. Messages and objects are not affected.\n\nRequires role: **admin**.",
+        "operationId": "reset-stats",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Reset statistics on every node",
+        "tags": [
+          "Monitoring"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/snapshot": {
+      "get": {
+        "description": "The latest poll: versions, totals, message and churn rates, nodes, alarms, the node × check health matrix, listeners, endpoint status, the deepest queues and anything that needs attention.\n\nRequires role: **viewer**.",
+        "operationId": "get-snapshot",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Poll now (including health checks) instead of returning the cached snapshot",
+            "explode": false,
+            "in": "query",
+            "name": "refresh",
+            "schema": {
+              "description": "Poll now (including health checks) instead of returning the cached snapshot",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Snapshot"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "Latest snapshot",
+        "tags": [
+          "Monitoring"
+        ]
+      }
+    },
+    "/v1/clusters/{cluster}/stream-connections": {
+      "get": {
+        "description": "Needs rabbitmq_stream_management; `available` is false without it.\n\nRequires role: **viewer**.",
+        "operationId": "list-stream-connections",
+        "parameters": [
+          {
+            "description": "Cluster id",
+            "in": "path",
+            "name": "cluster",
+            "required": true,
+            "schema": {
+              "description": "Cluster id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Case-insensitive substring matched against names, client name, user, vhost and node",
+            "explode": false,
+            "in": "query",
+            "name": "q",
+            "schema": {
+              "description": "Case-insensitive substring matched against names, client name, user, vhost and node",
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "vhost",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "user",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "node",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Field to sort by (a JSON field name of the items)",
+            "explode": false,
+            "in": "query",
+            "name": "sort",
+            "schema": {
+              "description": "Field to sort by (a JSON field name of the items)",
+              "type": "string"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "desc",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "default": 1,
+              "format": "int64",
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "explode": false,
+            "in": "query",
+            "name": "pageSize",
+            "schema": {
+              "default": 100,
+              "format": "int64",
+              "maximum": 2000,
+              "minimum": 1,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StreamConnectionsPage"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorModel"
+                }
+              }
+            },
+            "description": "Error"
+          }
+        },
+        "summary": "List stream protocol connections",
+        "tags": [
+          "Connections, channels and consumers"
         ]
       }
     },

@@ -4,7 +4,8 @@
 	import { page } from '$app/state';
 	import { api } from '$lib/api/client';
 	import { session, can } from '$lib/session.svelte';
-	import Icon from './Icon.svelte';
+	import { clusters, clusterState } from '$lib/clusters.svelte';
+	import Icon, { type IconName } from './Icon.svelte';
 	import Logo from './Logo.svelte';
 
 	let { children }: { children: Snippet } = $props();
@@ -39,6 +40,8 @@
 	}
 
 	const path = $derived(page.url.pathname);
+	const currentCluster = $derived(page.params.cluster ? clusters.list.find((c) => c.id === page.params.cluster) : undefined);
+
 	function active(href: string, exact = false) {
 		return exact ? path === href : path === href || path.startsWith(href + '/');
 	}
@@ -48,6 +51,16 @@
 		mobileOpen = false;
 	});
 
+
+	type Item = { href: string; label: string; icon: IconName; exact?: boolean };
+	const clusterItems = (id: string): Item[] => [
+		{ href: `/clusters/${id}`, label: 'Overview', icon: 'dashboard', exact: true },
+		{ href: `/clusters/${id}/nodes`, label: 'Nodes', icon: 'server' },
+		{ href: `/clusters/${id}/health`, label: 'Health', icon: 'heart' },
+		{ href: `/clusters/${id}/connections`, label: 'Connections', icon: 'plug' },
+		{ href: `/clusters/${id}/channels`, label: 'Channels', icon: 'layers' },
+		{ href: `/clusters/${id}/consumers`, label: 'Consumers', icon: 'inbox' }
+	];
 </script>
 
 <div class="shell">
@@ -60,7 +73,30 @@
 		<a href="/" class="brand top"><Logo size={24} /><span>rabmin</span></a>
 
 		<nav>
-			<a href="/" class="item" class:active={path === '/'}><Icon name="globe" />Overview</a>
+			<a href="/" class="item" class:active={path === '/'}><Icon name="globe" />All clusters</a>
+
+			<div class="section">
+				<span>Clusters</span>
+				{#if can('admin')}<a href="/clusters/new" class="add" title="Add a cluster" aria-label="Add a cluster"><Icon name="plus" size={14} /></a>{/if}
+			</div>
+			{#each clusters.list as c (c.id)}
+				{@const open = currentCluster?.id === c.id}
+				<a href="/clusters/{c.id}" class="item sys" class:current={open}>
+					<span class="dot {clusterState(c).tone}"></span>
+					<span class="ellipsis">{c.name}</span>
+					<Icon name={open ? 'chevronDown' : 'chevronRight'} size={14} />
+				</a>
+				{#if open}
+					<div class="sub">
+						{#each clusterItems(c.id) as it}
+							<a href={it.href} class="item" class:active={active(it.href, it.exact)}><Icon name={it.icon} />{it.label}</a>
+						{/each}
+						<a href="/clusters/{c.id}/settings" class="item" class:active={active(`/clusters/${c.id}/settings`)}><Icon name="settings" />Settings</a>
+					</div>
+				{/if}
+			{:else}
+				<div class="none faint">No clusters yet</div>
+			{/each}
 
 			<div class="section"><span>rabmin</span></div>
 			{#if can('admin')}
@@ -181,12 +217,6 @@
 	.sub .item {
 		font-size: 13px;
 		padding: 5px 8px;
-	}
-	.acc-label {
-		font-size: 11px;
-		color: var(--text-3);
-		padding: 10px 8px 3px;
-		font-weight: 600;
 	}
 	.none {
 		padding: 4px 8px;

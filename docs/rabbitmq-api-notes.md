@@ -13,12 +13,13 @@ Behaviour of the management API and the Prometheus endpoint that rabmin depends 
 
 - `/api/overview`: `rabbitmq_version`, `product_version`, `erlang_version`, `cluster_name`, `node` (the node that answered), `message_stats` (counters plus `*_details.rate`), `queue_totals`, `object_totals`, `churn_rates`, `listeners`, `contexts`, `disable_stats`, `enable_queue_totals`.
 - `contexts[].port` is a **string**; `listeners[].port` is a number.
+- `/api/nodes`: node details (`enabled_plugins`, memory, file descriptors) appear only after the node's first statistics emission, a few seconds after boot; until then a running node shows little more than its name.
 - `/api/nodes`: a stopped node is listed with `running: false` and almost no other fields.
 - `sockets_used` / `sockets_total` are 0 in 4.x; sockets are no longer tracked.
 - `being_drained` is true while a node is in maintenance mode.
 - `enabled_plugins` (per node) is the only way to see plugins over HTTP.
 - `/api/nodes/{node}/memory` returns `{"memory": {...breakdown..., "total": {"erlang","rss","allocated"}, "strategy"}}`.
-- `DELETE /api/reset/{node}` resets a node's stats (administrator only).
+- `DELETE /api/reset` and `DELETE /api/reset/{node}` reset statistics (administrator only). They answer **406** when the request carries `Accept: application/json`; rabmin only sends that header on GET.
 
 ## Health checks
 
@@ -54,3 +55,8 @@ Success is `200 {"status":"ok"}`; failure is `503 {"status":"failed","reason":..
 - `rabbitmq_identity_info{rabbitmq_node, rabbitmq_cluster}` identifies the node; `rabbitmq_build_info` the versions.
 - Message counters (`rabbitmq_global_messages_*_total`) are labelled by `protocol` and sometimes `queue_type`; sum over labels.
 - `/metrics/per-object` and `/metrics/detailed?family=...` exist; detailed queue metrics are `rabbitmq_detailed_queue_*{vhost,queue}`.
+
+## Shovels
+
+- `/api/shovels` lists shovel status (`state`, `forwarded`, `blocked_status`, `src_uri`, `dest_uri`); it is provided by rabbitmq_shovel_management and absent from `/api/index.html`.
+- In a dynamic shovel definition, `"src-uri": "amqp://"` connects to the local node's **default vhost `/`**, not to the vhost the shovel is declared in. Use `amqp:///shop` for vhost `shop`. A shovel pointed at a queue in the wrong vhost still reports `state: running` and simply forwards nothing, so `running` is not proof that a shovel works; watch `forwarded`.

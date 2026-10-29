@@ -98,7 +98,7 @@ func (e *Env) Seed(ctx context.Context) error {
 	}
 	// Shovel east's shop/shovel.outbox to west's replica/shovel.inbox.
 	return api(east, http.MethodPut, "/api/parameters/shovel/shop/outbox-to-west", map[string]any{"value": map[string]any{
-		"src-protocol": "amqp091", "src-uri": "amqp://", "src-queue": "shovel.outbox",
+		"src-protocol": "amqp091", "src-uri": "amqp:///shop", "src-queue": "shovel.outbox",
 		"dest-protocol": "amqp091", "dest-uri": w.InternalAMQPURL + "/replica", "dest-queue": "shovel.inbox",
 		"ack-mode": "on-confirm", "src-delete-after": "never",
 	}})
@@ -146,6 +146,9 @@ func (e *Env) Traffic(ctx context.Context, log *slog.Logger) {
 		{"outbox-relay", node(0), "shop", publisher("", func(n int) (string, amqp.Publishing) {
 			return "shovel.outbox", amqp.Publishing{ContentType: "application/json", Body: []byte(fmt.Sprintf(`{"outbox":%d}`, n))}
 		}, 500*time.Millisecond, false)},
+		{"report-generator", node(2), "shop", publisher("", func(n int) (string, amqp.Publishing) {
+			return "reports.pending", amqp.Publishing{ContentType: "application/json", Body: []byte(fmt.Sprintf(`{"report":%d}`, n))}
+		}, 50*time.Millisecond, false)},
 		{"task-producer", node(1), "/", publisher("", func(n int) (string, amqp.Publishing) {
 			return "tasks", amqp.Publishing{Body: []byte(fmt.Sprintf("task %d", n))}
 		}, 100*time.Millisecond, false)},

@@ -100,6 +100,442 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/clusters": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List clusters
+         * @description Requires role: **viewer**.
+         */
+        get: operations["list-clusters"];
+        put?: never;
+        /**
+         * Register a cluster
+         * @description Requires role: **admin**.
+         */
+        post: operations["create-cluster"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Test connection settings
+         * @description Connects with the given settings without saving them and reports versions, plugins and what the user may do. Pass clusterId (and credentialId) to reuse stored secrets for fields left empty.
+         *
+         *     Requires role: **admin**.
+         */
+        post: operations["test-cluster-connection"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get a cluster
+         * @description Requires role: **viewer**.
+         */
+        get: operations["get-cluster"];
+        /**
+         * Update a cluster
+         * @description Requires role: **admin**.
+         */
+        put: operations["update-cluster"];
+        post?: never;
+        /**
+         * Remove a cluster
+         * @description Forgets the cluster and its stored credentials. Nothing changes on the brokers.
+         *
+         *     Requires role: **admin**.
+         */
+        delete: operations["delete-cluster"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/channels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List channels
+         * @description Rates are averages over the last 30 seconds.
+         *
+         *     Requires role: **viewer**.
+         */
+        get: operations["list-channels"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/channels/{name}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Channel detail
+         * @description Prefetch, unacked and unconfirmed counts, consumers, and (in the detailed rates mode) publishing per exchange and delivery per queue.
+         *
+         *     Requires role: **viewer**.
+         */
+        get: operations["get-channel"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/cluster-name": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Rename the RabbitMQ cluster
+         * @description Sets the name RabbitMQ reports (`cluster_name`). rabmin's own display name is changed with update-cluster.
+         *
+         *     Requires role: **admin**.
+         */
+        put: operations["set-cluster-name"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/connections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List connections
+         * @description AMQP 0-9-1, AMQP 1.0, MQTT and STOMP connections (and direct connections such as shovels). Rates are averages over the last 30 seconds.
+         *
+         *     Requires role: **viewer**.
+         */
+        get: operations["list-connections"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/connections/close": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Close connections in bulk
+         * @description Closes every connection matching all the given filters (at least one is required): explicit names, a user, a vhost, or a client name.
+         *
+         *     Requires role: **operator**.
+         */
+        post: operations["close-connections"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/connections/{name}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Connection detail
+         * @description Client properties and capabilities, TLS, negotiated limits, rates and the connection's channels.
+         *
+         *     Requires role: **viewer**.
+         */
+        get: operations["get-connection"];
+        put?: never;
+        post?: never;
+        /**
+         * Close a connection
+         * @description The client is told the reason in the connection.close frame.
+         *
+         *     Requires role: **operator**.
+         */
+        delete: operations["close-connection"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/consumers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List consumers
+         * @description Requires role: **viewer**.
+         */
+        get: operations["list-consumers"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/credentials": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List credential profiles
+         * @description Requires role: **viewer**.
+         */
+        get: operations["list-credentials"];
+        put?: never;
+        /**
+         * Add a credential profile
+         * @description An extra RabbitMQ user for this cluster, so browsing and publishing can run with less privilege than the management user.
+         *
+         *     Requires role: **admin**.
+         */
+        post: operations["create-credential"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/credentials/{credential}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Update a credential profile
+         * @description Requires role: **admin**.
+         */
+        put: operations["update-credential"];
+        post?: never;
+        /**
+         * Remove a credential profile
+         * @description Requires role: **admin**.
+         */
+        delete: operations["delete-credential"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Live snapshots (SSE)
+         * @description Server-sent events: a `snapshot` event after every poll. Requires role: **viewer**.
+         */
+        get: operations["stream-snapshots"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Rate history
+         * @description Rates and counts from every poll since rabmin started (in memory, up to 720 points).
+         *
+         *     Requires role: **viewer**.
+         */
+        get: operations["get-history"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/nodes/{node}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Node detail
+         * @description A node with its memory breakdown and the raw management object (applications, config files, auth mechanisms, exchange types...).
+         *
+         *     Requires role: **viewer**.
+         */
+        get: operations["get-node"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/nodes/{node}/reset-stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Reset a node's statistics
+         * @description Clears the management statistics database on one node (the built-in UI's "Reset stats"). Messages and objects are not affected.
+         *
+         *     Requires role: **admin**.
+         */
+        post: operations["reset-node-stats"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/reset-stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Reset statistics on every node
+         * @description Clears the management statistics database on all nodes. Messages and objects are not affected.
+         *
+         *     Requires role: **admin**.
+         */
+        post: operations["reset-stats"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/snapshot": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Latest snapshot
+         * @description The latest poll: versions, totals, message and churn rates, nodes, alarms, the node × check health matrix, listeners, endpoint status, the deepest queues and anything that needs attention.
+         *
+         *     Requires role: **viewer**.
+         */
+        get: operations["get-snapshot"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/stream-connections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List stream protocol connections
+         * @description Needs rabbitmq_stream_management; `available` is false without it.
+         *
+         *     Requires role: **viewer**.
+         */
+        get: operations["list-stream-connections"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/setup": {
         parameters: {
             query?: never;
@@ -251,6 +687,19 @@ export interface components {
             userId: number;
             username: string;
         };
+        Alarm: {
+            node: string;
+            /** @enum {string} */
+            resource: "memory" | "disk";
+        };
+        Attention: {
+            /** @description node-down, alarm, partition, health, maintenance, version-mismatch, queue-no-consumers, queue-state, queue-members-offline, endpoint */
+            kind: string;
+            message: string;
+            /** @enum {string} */
+            severity: "warn" | "bad";
+            subject: string;
+        };
         AuditEntry: {
             action: string;
             actor: string;
@@ -267,6 +716,276 @@ export interface components {
         "Change-passwordRequest": {
             current: string;
             new: string;
+        };
+        Channel: {
+            /** Format: double */
+            ackRate: number;
+            /** Format: int64 */
+            acksUncommitted: number;
+            clientName?: string;
+            confirm: boolean;
+            /** Format: double */
+            confirmRate: number;
+            connection: string;
+            /** Format: int64 */
+            consumers: number;
+            /** Format: double */
+            deliverRate: number;
+            /**
+             * Format: int64
+             * @description Per-channel prefetch (basic.qos global=true)
+             */
+            globalPrefetch: number;
+            name: string;
+            node: string;
+            /** Format: int64 */
+            number: number;
+            /**
+             * Format: int64
+             * @description Per-consumer prefetch (basic.qos global=false)
+             */
+            prefetch: number;
+            /** Format: double */
+            publishRate: number;
+            /** Format: double */
+            redeliverRate: number;
+            state: string;
+            transactional: boolean;
+            /** Format: int64 */
+            unacked: number;
+            /** Format: int64 */
+            uncommitted: number;
+            /** Format: int64 */
+            unconfirmed: number;
+            /** Format: double */
+            unroutableRate: number;
+            user: string;
+            vhost: string;
+        };
+        ChannelDetail: {
+            channel: components["schemas"]["Channel"];
+            consumers: components["schemas"]["Consumer"][];
+            deliveries: components["schemas"]["ObjectRate"][];
+            publishes: components["schemas"]["ObjectRate"][];
+            raw: unknown;
+        };
+        ChannelsPage: {
+            /**
+             * Format: int64
+             * @description Items matching the filters
+             */
+            filtered: number;
+            items: components["schemas"]["Channel"][];
+            /** Format: int64 */
+            page: number;
+            /** Format: int64 */
+            pageSize: number;
+            /**
+             * Format: int64
+             * @description Items before filtering
+             */
+            total: number;
+        };
+        "Close-connectionsRequest": {
+            /** @description Exact client-provided connection name */
+            clientName?: string;
+            names?: string[];
+            reason?: string;
+            user?: string;
+            vhost?: string;
+        };
+        CloseResult: {
+            /** Format: int64 */
+            closed: number;
+            errors: string[];
+            names: string[];
+        };
+        ClusterIn: {
+            /** @description AMQP URLs for messaging features (amqp://host:5672), without credentials */
+            amqpUrls?: string[];
+            /** @description Management API credentials; required on create */
+            auth?: components["schemas"]["CredentialIn"];
+            /** @description Credential profiles to create (create only) */
+            credentials?: components["schemas"]["CredentialProfileIn"][];
+            description?: string;
+            /** @description Slug used in URLs; derived from name when empty. Cannot change. */
+            id?: string;
+            /** @description Management API base URLs (http://host:15672), ideally one per node: rabmin fails over between them and runs node-local health checks through each */
+            managementUrls: string[];
+            name: string;
+            /** @description rabbitmq_prometheus base URLs (http://host:15692), one per node */
+            prometheusUrls?: string[];
+            removeTls?: boolean;
+            tls?: components["schemas"]["TLSIn"];
+        };
+        ClusterOut: {
+            amqpUrls: string[];
+            auth: components["schemas"]["CredentialOut"];
+            /** Format: date-time */
+            createdAt: string;
+            credentials: components["schemas"]["CredentialProfileOut"][];
+            description: string;
+            id: string;
+            managementUrls: string[];
+            name: string;
+            prometheusUrls: string[];
+            status: components["schemas"]["ClusterStatus"];
+            tls?: components["schemas"]["TLSOut"];
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        ClusterStatus: {
+            /** Format: int64 */
+            alarms: number;
+            /** Format: int64 */
+            attention: number;
+            /** @description The name RabbitMQ reports */
+            clusterName?: string;
+            connected: boolean;
+            /** Format: int64 */
+            connections: number;
+            /** Format: int64 */
+            consumers: number;
+            /** Format: double */
+            deliverRate: number;
+            error?: string;
+            /**
+             * Format: int64
+             * @description Running nodes without alarms, partitions or failing health checks
+             */
+            healthy: number;
+            /** Format: date-time */
+            lastPoll?: string;
+            /** Format: double */
+            messages: number;
+            /** Format: int64 */
+            nodes: number;
+            /** Format: int64 */
+            nodesRunning: number;
+            /** Format: double */
+            publishRate: number;
+            /** Format: int64 */
+            queues: number;
+            ratesSource: string;
+            versions: string[];
+        };
+        Connection: {
+            authMechanism?: string;
+            /** Format: int64 */
+            channelMax: number;
+            /** Format: int64 */
+            channels: number;
+            /** @description connection_name client property */
+            clientName?: string;
+            /**
+             * Format: int64
+             * @description Unix milliseconds
+             */
+            connectedAt: number;
+            /** Format: int64 */
+            frameMax: number;
+            /**
+             * Format: int64
+             * @description Heartbeat timeout in seconds
+             */
+            heartbeat: number;
+            host?: string;
+            name: string;
+            node: string;
+            peerHost?: string;
+            /** Format: int64 */
+            peerPort?: number;
+            platform?: string;
+            /** Format: int64 */
+            port?: number;
+            product?: string;
+            protocol: string;
+            /** Format: double */
+            recvBytes: number;
+            /**
+             * Format: double
+             * @description Bytes per second from the client
+             */
+            recvRate: number;
+            /** Format: double */
+            sendBytes: number;
+            /** Format: double */
+            sendPending: number;
+            /**
+             * Format: double
+             * @description Bytes per second to the client
+             */
+            sendRate: number;
+            state: string;
+            tls: boolean;
+            tlsProtocol?: string;
+            /** @description network or direct */
+            type: string;
+            user: string;
+            version?: string;
+            vhost: string;
+        };
+        ConnectionDetail: {
+            channels: components["schemas"]["Channel"][];
+            /** @description All client properties, including capabilities */
+            clientProperties: unknown;
+            connection: components["schemas"]["Connection"];
+            /** @description The management API object */
+            raw: unknown;
+        };
+        ConnectionsPage: {
+            /**
+             * Format: int64
+             * @description Items matching the filters
+             */
+            filtered: number;
+            items: components["schemas"]["Connection"][];
+            /** Format: int64 */
+            page: number;
+            /** Format: int64 */
+            pageSize: number;
+            /**
+             * Format: int64
+             * @description Items before filtering
+             */
+            total: number;
+        };
+        Consumer: {
+            ackRequired: boolean;
+            active: boolean;
+            arguments: unknown;
+            channel: string;
+            clientName?: string;
+            connection: string;
+            exclusive: boolean;
+            node: string;
+            /** Format: int64 */
+            prefetch: number;
+            queue: string;
+            /** @description up, single_active (the active one) or waiting */
+            status: string;
+            tag: string;
+            /** Format: int64 */
+            timeoutMs?: number;
+            user: string;
+            vhost: string;
+        };
+        ConsumersPage: {
+            /**
+             * Format: int64
+             * @description Items matching the filters
+             */
+            filtered: number;
+            items: components["schemas"]["Consumer"][];
+            /** Format: int64 */
+            page: number;
+            /** Format: int64 */
+            pageSize: number;
+            /**
+             * Format: int64
+             * @description Items before filtering
+             */
+            total: number;
         };
         "Create-tokenRequest": {
             /**
@@ -305,9 +1024,48 @@ export interface components {
             userId: number;
             username: string;
         };
+        CredentialIn: {
+            password?: string;
+            token?: string;
+            /**
+             * @description basic: username and password; bearer: an OAuth2 access token for brokers whose management API uses OAuth2
+             * @enum {string}
+             */
+            type: "basic" | "bearer";
+            username?: string;
+        };
+        CredentialOut: {
+            hasPassword: boolean;
+            hasToken: boolean;
+            type: string;
+            username?: string;
+        };
+        CredentialProfileIn: {
+            auth?: components["schemas"]["CredentialIn"];
+            /** @description Slug; derived from name when empty */
+            id?: string;
+            name: string;
+        };
+        CredentialProfileOut: {
+            auth: components["schemas"]["CredentialOut"];
+            /** Format: date-time */
+            createdAt: string;
+            id: string;
+            name: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
         CredsBody: {
             password: string;
             username: string;
+        };
+        Endpoint: {
+            error?: string;
+            /** Format: int64 */
+            latencyMs: number;
+            node?: string;
+            ok: boolean;
+            url: string;
         };
         ErrorDetail: {
             /** @description Where the error occurred, e.g. 'body.items[3].tags' or 'path.thing-id' */
@@ -350,6 +1108,35 @@ export interface components {
              */
             type?: string;
         };
+        HealthResult: {
+            check: string;
+            detail?: unknown;
+            node: string;
+            reason?: string;
+            /** @enum {string} */
+            status: "ok" | "failed" | "error";
+        };
+        Info: {
+            clusterName: string;
+            defaultQueueType: string;
+            erlangFullVersion: string;
+            erlangVersion: string;
+            managementVersion: string;
+            productName: string;
+            productVersion: string;
+            rabbitmqVersion: string;
+            ratesMode: string;
+            statsDisabled: boolean;
+            versions: string[];
+        };
+        Listener: {
+            ip: string;
+            node: string;
+            /** Format: int64 */
+            port: number;
+            protocol: string;
+            tls: boolean;
+        };
         MeBody: {
             /** @enum {string} */
             authMethod: "session" | "token";
@@ -357,11 +1144,328 @@ export interface components {
             role: string;
             user: components["schemas"]["User"];
         };
+        MemoryPart: {
+            /** Format: double */
+            bytes: number;
+            category: string;
+            group: string;
+        };
+        NodeDetail: {
+            memory: components["schemas"]["MemoryPart"][];
+            memoryStrategy: string;
+            /** Format: double */
+            memoryTotal: number;
+            node: components["schemas"]["NodeInfo"];
+            raw: unknown;
+        };
+        NodeInfo: {
+            /** @description In maintenance mode */
+            beingDrained: boolean;
+            diskAlarm: boolean;
+            /** Format: double */
+            diskFree: number;
+            /** Format: double */
+            diskFreeLimit: number;
+            enabledPlugins: string[];
+            endpoint?: string;
+            erlangVersion: string;
+            /** Format: double */
+            fdTotal: number;
+            /** Format: double */
+            fdUsed: number;
+            healthy: boolean;
+            memAlarm: boolean;
+            /** Format: double */
+            memLimit: number;
+            /** Format: double */
+            memUsed: number;
+            name: string;
+            partitions: string[];
+            /** Format: double */
+            procTotal: number;
+            /** Format: double */
+            procUsed: number;
+            /** Format: int64 */
+            processors: number;
+            rabbitmqVersion: string;
+            /** Format: double */
+            runQueue: number;
+            running: boolean;
+            type: string;
+            /** Format: int64 */
+            uptimeMs: number;
+        };
+        ObjectRate: {
+            /** Format: double */
+            count: number;
+            name: string;
+            /** Format: double */
+            rate: number;
+            vhost: string;
+        };
+        PromSummary: {
+            error?: string;
+            node?: string;
+            ok: boolean;
+            url: string;
+        };
+        QueueBrief: {
+            /** Format: int64 */
+            consumers: number;
+            /** Format: double */
+            deliverRate: number;
+            leader?: string;
+            members: string[];
+            /** Format: double */
+            messages: number;
+            name: string;
+            node?: string;
+            online: string[];
+            /** Format: double */
+            publishRate: number;
+            /** Format: double */
+            ready: number;
+            state: string;
+            type: string;
+            /** Format: double */
+            unacked: number;
+            vhost: string;
+        };
+        RatePoint: {
+            /** Format: double */
+            ack: number;
+            /** Format: double */
+            chanClosed: number;
+            /** Format: double */
+            chanCreated: number;
+            /** Format: int64 */
+            channels: number;
+            /** Format: double */
+            confirm: number;
+            /** Format: double */
+            connClosed: number;
+            /** Format: double */
+            connCreated: number;
+            /** Format: int64 */
+            connections: number;
+            /** Format: int64 */
+            consumers: number;
+            /** Format: double */
+            deliver: number;
+            /** Format: double */
+            publish: number;
+            /** Format: double */
+            queueCreated: number;
+            /** Format: double */
+            queueDeleted: number;
+            /** Format: int64 */
+            queues: number;
+            /** Format: double */
+            ready: number;
+            /** Format: double */
+            redeliver: number;
+            /** Format: date-time */
+            t: string;
+            /** Format: double */
+            unacked: number;
+            /** Format: double */
+            unroutable: number;
+        };
+        Rates: {
+            /** Format: double */
+            ack: number;
+            /** Format: double */
+            chanClosed: number;
+            /** Format: double */
+            chanCreated: number;
+            /** Format: double */
+            confirm: number;
+            /** Format: double */
+            connClosed: number;
+            /** Format: double */
+            connCreated: number;
+            /**
+             * Format: double
+             * @description Deliveries to consumers with manual ack
+             */
+            deliver: number;
+            /**
+             * Format: double
+             * @description All deliveries and gets
+             */
+            deliverGet: number;
+            /**
+             * Format: double
+             * @description Deliveries to consumers with automatic ack
+             */
+            deliverNoAck: number;
+            /** Format: double */
+            diskReads: number;
+            /** Format: double */
+            diskWrites: number;
+            /** Format: double */
+            dropUnroutable: number;
+            /** Format: double */
+            get: number;
+            /** Format: double */
+            getEmpty: number;
+            /** Format: double */
+            getNoAck: number;
+            /** Format: double */
+            publish: number;
+            /** Format: double */
+            queueCreated: number;
+            /** Format: double */
+            queueDeclared: number;
+            /** Format: double */
+            queueDeleted: number;
+            /** Format: double */
+            redeliver: number;
+            /** Format: double */
+            returnUnroutable: number;
+        };
+        "Set-cluster-nameRequest": {
+            name: string;
+        };
+        Snapshot: {
+            alarms: components["schemas"]["Alarm"][];
+            attention: components["schemas"]["Attention"][];
+            clusterId: string;
+            connected: boolean;
+            contexts: components["schemas"]["WebContext"][];
+            endpoints: components["schemas"]["Endpoint"][];
+            error?: string;
+            health: components["schemas"]["HealthResult"][];
+            healthChecks: string[];
+            info: components["schemas"]["Info"];
+            listeners: components["schemas"]["Listener"][];
+            nodes: components["schemas"]["NodeInfo"][];
+            prometheus: components["schemas"]["PromSummary"][];
+            /** @description The deepest queues (up to 500 inspected), plus any with problems */
+            queues: components["schemas"]["QueueBrief"][];
+            rates: components["schemas"]["Rates"];
+            /** @enum {string} */
+            ratesSource: "management" | "prometheus" | "none";
+            /** Format: date-time */
+            time: string;
+            totals: components["schemas"]["Totals"];
+        };
         StatusBody: {
             authenticated: boolean;
             /** @description True when no users exist and the first admin can be created with POST /v1/setup */
             needsSetup: boolean;
             version: string;
+        };
+        StreamConnection: {
+            clientName?: string;
+            /** Format: int64 */
+            connectedAt: number;
+            /** Format: int64 */
+            consumers: number;
+            /** Format: int64 */
+            heartbeat: number;
+            name: string;
+            node: string;
+            peerHost?: string;
+            /** Format: int64 */
+            peerPort?: number;
+            /** Format: int64 */
+            publishers: number;
+            /** Format: double */
+            recvBytes: number;
+            /** Format: double */
+            recvRate: number;
+            /** Format: double */
+            sendBytes: number;
+            /** Format: double */
+            sendRate: number;
+            tls: boolean;
+            user: string;
+            vhost: string;
+        };
+        StreamConnectionsPage: {
+            available: boolean;
+            /**
+             * Format: int64
+             * @description Items matching the filters
+             */
+            filtered: number;
+            items: components["schemas"]["StreamConnection"][];
+            /** Format: int64 */
+            page: number;
+            /** Format: int64 */
+            pageSize: number;
+            /**
+             * Format: int64
+             * @description Items before filtering
+             */
+            total: number;
+        };
+        TLSIn: {
+            /** @description PEM CA bundle */
+            ca?: string;
+            /** @description PEM client certificate */
+            cert?: string;
+            insecureSkipVerify?: boolean;
+            /** @description PEM client key */
+            key?: string;
+        };
+        TLSOut: {
+            ca?: string;
+            cert?: string;
+            hasKey: boolean;
+            insecureSkipVerify: boolean;
+        };
+        "Test-cluster-connectionRequest": {
+            auth?: components["schemas"]["CredentialIn"];
+            clusterId?: string;
+            credentialId?: string;
+            managementUrls: string[];
+            prometheusUrls?: string[];
+            tls?: components["schemas"]["TLSIn"];
+        };
+        TestResult: {
+            /** @description The user can see every vhost's objects (administrator or monitoring tag) */
+            canMonitor: boolean;
+            clusterName?: string;
+            endpoints: components["schemas"]["Endpoint"][];
+            erlangVersion?: string;
+            error?: string;
+            isAdministrator: boolean;
+            /** Format: int64 */
+            nodes: number;
+            ok: boolean;
+            /** @description Plugins enabled on any node */
+            plugins: string[];
+            productName?: string;
+            prometheus: components["schemas"]["PromSummary"][];
+            rabbitmqVersion?: string;
+            statsDisabled: boolean;
+            tags: string[];
+            user?: string;
+            warnings: string[];
+        };
+        Totals: {
+            /** Format: int64 */
+            channels: number;
+            /** Format: int64 */
+            connections: number;
+            /** Format: int64 */
+            consumers: number;
+            /** Format: int64 */
+            exchanges: number;
+            /** Format: double */
+            messages: number;
+            /** Format: double */
+            messagesReady: number;
+            /** Format: double */
+            messagesUnacked: number;
+            /** Format: int64 */
+            nodes: number;
+            /** Format: int64 */
+            nodesRunning: number;
+            /** Format: int64 */
+            queues: number;
         };
         "Update-userRequest": {
             disabled?: boolean;
@@ -377,6 +1481,14 @@ export interface components {
             id: number;
             role: string;
             username: string;
+        };
+        WebContext: {
+            description: string;
+            node: string;
+            path: string;
+            port: string;
+            protocol?: string;
+            tls: boolean;
         };
     };
     responses: never;
@@ -536,6 +1648,891 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "list-clusters": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClusterOut"][];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "create-cluster": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ClusterIn"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClusterOut"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "test-cluster-connection": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Test-cluster-connectionRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TestResult"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "get-cluster": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClusterOut"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "update-cluster": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ClusterIn"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClusterOut"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "delete-cluster": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "list-channels": {
+        parameters: {
+            query?: {
+                /** @description Case-insensitive substring matched against names, client name, user, vhost and node */
+                q?: string;
+                vhost?: string;
+                user?: string;
+                node?: string;
+                /** @description Field to sort by (a JSON field name of the items) */
+                sort?: string;
+                desc?: boolean;
+                page?: number;
+                pageSize?: number;
+            };
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChannelsPage"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "get-channel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+                /** @description Name as listed by the management API (URL-encoded) */
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChannelDetail"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "set-cluster-name": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Set-cluster-nameRequest"];
+            };
+        };
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "list-connections": {
+        parameters: {
+            query?: {
+                /** @description Case-insensitive substring matched against names, client name, user, vhost and node */
+                q?: string;
+                vhost?: string;
+                user?: string;
+                node?: string;
+                /** @description Field to sort by (a JSON field name of the items) */
+                sort?: string;
+                desc?: boolean;
+                page?: number;
+                pageSize?: number;
+                /** @description Substring of the protocol, e.g. AMQP 0-9-1, MQTT */
+                protocol?: string;
+            };
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConnectionsPage"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "close-connections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Close-connectionsRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CloseResult"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "get-connection": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+                /** @description Name as listed by the management API (URL-encoded) */
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConnectionDetail"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "close-connection": {
+        parameters: {
+            query?: {
+                reason?: string;
+            };
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+                /** @description Name as listed by the management API (URL-encoded) */
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "list-consumers": {
+        parameters: {
+            query?: {
+                /** @description Case-insensitive substring matched against names, client name, user, vhost and node */
+                q?: string;
+                vhost?: string;
+                user?: string;
+                node?: string;
+                /** @description Field to sort by (a JSON field name of the items) */
+                sort?: string;
+                desc?: boolean;
+                page?: number;
+                pageSize?: number;
+                /** @description Exact queue name */
+                queue?: string;
+            };
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConsumersPage"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "list-credentials": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CredentialProfileOut"][];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "create-credential": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CredentialProfileIn"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CredentialProfileOut"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "update-credential": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+                /** @description Credential profile id */
+                credential: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CredentialProfileIn"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CredentialProfileOut"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "delete-credential": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+                /** @description Credential profile id */
+                credential: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "stream-snapshots": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/event-stream": {
+                        data: components["schemas"]["Snapshot"];
+                        /**
+                         * @description The event name.
+                         * @constant
+                         */
+                        event: "snapshot";
+                        /** @description The event ID. */
+                        id?: number | string;
+                        /** @description The retry time in milliseconds. */
+                        retry?: number;
+                    }[];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "get-history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RatePoint"][];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "get-node": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+                /** @description Erlang node name, e.g. rabbit@host */
+                node: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NodeDetail"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "reset-node-stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+                /** @description Erlang node name, e.g. rabbit@host */
+                node: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "reset-stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "get-snapshot": {
+        parameters: {
+            query?: {
+                /** @description Poll now (including health checks) instead of returning the cached snapshot */
+                refresh?: boolean;
+            };
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Snapshot"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "list-stream-connections": {
+        parameters: {
+            query?: {
+                /** @description Case-insensitive substring matched against names, client name, user, vhost and node */
+                q?: string;
+                vhost?: string;
+                user?: string;
+                node?: string;
+                /** @description Field to sort by (a JSON field name of the items) */
+                sort?: string;
+                desc?: boolean;
+                page?: number;
+                pageSize?: number;
+            };
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StreamConnectionsPage"];
+                };
             };
             /** @description Error */
             default: {

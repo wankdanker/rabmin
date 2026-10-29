@@ -4,6 +4,7 @@
 	import { page } from '$app/state';
 	import { api, unwrap, setUnauthorizedHandler } from '$lib/api/client';
 	import { session } from '$lib/session.svelte';
+	import { refreshClusters } from '$lib/clusters.svelte';
 	import Shell from '$lib/components/Shell.svelte';
 	import Toasts from '$lib/components/Toasts.svelte';
 	import Confirm from '$lib/components/Confirm.svelte';
@@ -32,6 +33,7 @@
 				return;
 			}
 			session.me = await unwrap(api.GET('/v1/auth/me'));
+			await refreshClusters();
 			if (isAuthPage) await goto('/');
 		} catch {
 			// Shown by the page that needs it.

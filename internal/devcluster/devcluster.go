@@ -273,14 +273,17 @@ func (e *Env) waitCluster(ctx context.Context, cs ClusterSpec) error {
 
 func (e *Env) runningNodes(ctx context.Context, n Node) (int, error) {
 	var nodes []struct {
-		Running bool `json:"running"`
+		Running bool     `json:"running"`
+		Plugins []string `json:"enabled_plugins"`
 	}
-	if err := e.API(ctx, n, http.MethodGet, "/api/nodes?columns=name,running", nil, &nodes); err != nil {
+	if err := e.API(ctx, n, http.MethodGet, "/api/nodes?columns=name,running,enabled_plugins", nil, &nodes); err != nil {
 		return 0, err
 	}
+	// Node details appear with the first statistics emission, a few
+	// seconds after boot; count a node only once they are there.
 	running := 0
 	for _, x := range nodes {
-		if x.Running {
+		if x.Running && len(x.Plugins) > 0 {
 			running++
 		}
 	}

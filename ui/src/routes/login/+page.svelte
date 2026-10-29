@@ -3,6 +3,7 @@
 	import { page } from '$app/state';
 	import { api, unwrap, errMsg } from '$lib/api/client';
 	import { session } from '$lib/session.svelte';
+	import { refreshClusters } from '$lib/clusters.svelte';
 	import AuthCard from '$lib/components/AuthCard.svelte';
 
 	let username = $state('');
@@ -16,6 +17,7 @@
 		error = null;
 		try {
 			session.me = await unwrap(api.POST('/v1/auth/login', { body: { username, password } }));
+			await refreshClusters();
 			const next = page.url.searchParams.get('next');
 			await goto(next && next.startsWith('/') && !next.startsWith('//') ? next : '/');
 		} catch (err) {

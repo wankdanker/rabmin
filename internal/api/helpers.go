@@ -14,6 +14,7 @@ import (
 	"github.com/danielgtaylor/huma/v2"
 
 	"github.com/wankdanker/rabmin/internal/auth"
+	"github.com/wankdanker/rabmin/internal/rabbitx"
 	"github.com/wankdanker/rabmin/internal/store"
 )
 
@@ -182,7 +183,26 @@ func apiErr(err error) error {
 	if errors.As(err, &se) {
 		return err
 	}
+	var ae *rabbitx.APIError
+	if errors.As(err, &ae) {
+		// Never pass a broker 401 through: the UI logs out on 401.
+		switch {
+		case ae.Unauthenticated():
+			return huma.NewError(http.StatusBadGateway, "RabbitMQ rejected rabmin's stored credentials for this cluster")
+		case ae.Forbidden():
+			return huma.Error403Forbidden("RabbitMQ refused the operation for rabmin's user: " + ae.Reason)
+		case ae.Status == http.StatusNotFound:
+			return huma.Error404NotFound("not found in RabbitMQ")
+		case ae.Status == http.StatusBadRequest:
+			return huma.Error400BadRequest("RabbitMQ: " + ae.Reason)
+		case ae.Status == http.StatusConflict, ae.Status == http.StatusPreconditionFailed:
+			return huma.Error409Conflict("RabbitMQ: " + ae.Reason)
+		}
+		return huma.NewError(http.StatusBadGateway, ae.Error())
+	}
 	switch {
+	case errors.Is(err, rabbitx.ErrUnreachable):
+		return huma.NewError(http.StatusBadGateway, err.Error())
 	case errors.Is(err, store.ErrNotFound):
 		return huma.Error404NotFound(err.Error())
 	case errors.Is(err, store.ErrConflict):
@@ -191,15 +211,6 @@ func apiErr(err error) error {
 		return huma.NewError(http.StatusGatewayTimeout, "request timed out: "+err.Error())
 	}
 	return huma.Error500InternalServerError(err.Error())
-}
-
-// toRaw marshals a value to json.RawMessage.
-func toRaw(v any) json.RawMessage {
-	b, err := json.Marshal(v)
-	if err != nil {
-		return json.RawMessage("null")
-	}
-	return b
 }
 
 // loginLimiter slows down password guessing per remote address and username.
@@ -261,4 +272,9 @@ type Empty struct{}
 // RawBody carries native RabbitMQ JSON.
 type RawBody struct {
 	Body json.RawMessage
+}
+
+func isNotFound(err error) bool {
+	var ae *rabbitx.APIError
+	return errors.As(err, &ae) && ae.Status == http.StatusNotFound
 }
