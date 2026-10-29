@@ -60,3 +60,58 @@ Success is `200 {"status":"ok"}`; failure is `503 {"status":"failed","reason":..
 
 - `/api/shovels` lists shovel status (`state`, `forwarded`, `blocked_status`, `src_uri`, `dest_uri`); it is provided by rabbitmq_shovel_management and absent from `/api/index.html`.
 - In a dynamic shovel definition, `"src-uri": "amqp://"` connects to the local node's **default vhost `/`**, not to the vhost the shovel is declared in. Use `amqp:///shop` for vhost `shop`. A shovel pointed at a queue in the wrong vhost still reports `state: running` and simply forwards nothing, so `running` is not proof that a shovel works; watch `forwarded`.
+
+## Errors, continued
+
+- A **PUT without `Content-Type: application/json` answers 415**, even when it has no body (`PUT /api/feature-flags/{name}/enable`). POST and DELETE do not care. rabmin sends the header on every PUT and POST.
+
+- `reason` is not always a string. Erlang terms come through as JSON, with char lists as integer arrays: an invalid permission regex answers `{"error":"bad_request","reason":["invalid_regexp",[40],[[109,105,...],1]]}`. rabmin renders such reasons readably.
+- `DELETE /api/queues/{vhost}/{name}?if-empty=true` and `?if-unused=true` refuse with **400** (`queue '...' not empty` / `in use`); rabmin maps them to 409.
+- A protected vhost refuses deletion with **412** `precondition_failed`.
+
+## Virtual hosts
+
+- `PUT /api/vhosts/{name}` on an existing vhost updates `description`, `tags` and `default_queue_type` in place. `tags` accepts a comma-separated string or an array.
+- `GET` returns `protected_from_deletion`; protection is toggled with `POST`/`DELETE /api/vhosts/{name}/deletion/protection`.
+- On a 3-node cluster, a `GET /api/vhost-limits` right after changing a limit (or a vhost's protection) can still return the old value for a moment. rabmin's vhost update waits for its own change to show before answering.
+- `PUT /api/vhosts/{name}` without `default_queue_type` **resets an existing vhost's default queue type to classic**. rabmin keeps the current one when it is not given.
+- Limits live under `/api/vhost-limits/{vhost}/{max-connections|max-queues}` with body `{"value": n}`; unknown names answer 400. User limits are the same under `/api/user-limits/{user}/{max-connections|max-channels}`.
+
+## Exchanges, bindings, publish
+
+- The default exchange has the name `""` in lists and is addressed as `amq.default` in paths.
+- Binding `properties_key` comes back URL-encoded already (`orders.created.%23`); headers bindings get a hash (`~fiybLg`). The `Location` header of a created binding encodes it once more (`%2523`), and DELETE accepts that form.
+- `POST /api/exchanges/{vhost}/{name}/publish` needs a `properties` object (400 `key_missing,properties` without it) and answers `{"routed": bool}`.
+
+## Queues
+
+- RabbitMQ 4.x refuses non-durable, non-exclusive queues by default: declaring one fails with 400 "Feature `transient_nonexcl_queues` is deprecated". rabmin creates durable queues unless told otherwise and explains the error.
+- A queue cannot be edited: re-declaring with different arguments fails with `inequivalent arg ...`. Changes go through policies.
+- Queue arguments are validated per type (`invalid arg 'x-max-priority' ... of queue type rabbit_quorum_queue`).
+- Streams cannot be purged (`queue.purge not supported by stream queues`).
+- Queue objects in 4.4 carry `effective_policy_definition`, `policy`, `operator_policy`, `delivery_limit`, `consumer_capacity`, and for quorum and stream queues `leader`, `members`, `online`.
+
+## Users and permissions
+
+- `/api/users/{name}` no longer returns `password_hash` in 4.x, only `has_password`.
+- **A `PUT /api/users/{name}` without `password` or `password_hash` removes the user's password** (they can no longer log in with it). To change tags while keeping the password, rabmin reads the current hash from `GET /api/definitions` and sends it back with `hashing_algorithm`.
+- `DELETE /api/topic-permissions/{vhost}/{user}` removes the user's topic permissions for **every** exchange in the vhost; neither `?exchange=` nor a body narrows it. rabmin removes one exchange's entry by deleting all and re-adding the rest (not atomic).
+- `PUT /api/permissions/{vhost}/{user}` on a missing vhost or user answers 400 `vhost_or_user_not_found`.
+
+## Policies and parameters
+
+- The broker validates policy definitions and rejects unknown keys (`... are not recognised policy settings`). Classic mirrored queue keys (`ha-mode`...) are rejected in 4.x. Operator policies accept only a subset of keys.
+- `/api/parameters` lists every component, including `operator_policy` and `vhost-limits`, and shovel and federation values **with credentials in their URIs**. rabmin redacts URI passwords when listing them.
+- `cluster_tags` is a global parameter whose value is `[]` when empty and an object once set; `/api/overview` shows it as `cluster_tags`.
+
+## Definitions
+
+- `POST /api/definitions` and `POST /api/definitions/{vhost}` are additive: nothing is deleted.
+- Import updates policies, users, permissions and parameters, but **silently skips exchanges and queues that already exist with different properties** (answers 204, nothing changes). rabmin's import preview shows those as conflicts.
+- Importing objects into a missing vhost fails with 400 "Please create virtual host ... prior to importing definitions."
+
+## Feature flags
+
+- `/api/feature-flags` returns `state` (enabled, disabled), `stability` (required, stable, experimental) and `require_level`. On a fresh 4.4 cluster every flag is enabled.
+- `PUT /api/feature-flags/{name}/enable` answers 204 (also when already enabled) and 400 `unsupported` for unknown flags.
+- `/api/deprecated-features` lists `deprecation_phase` and `state`; `/api/deprecated-features/used` lists those in use.

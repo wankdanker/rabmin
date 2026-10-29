@@ -190,7 +190,7 @@ type QueueBrief struct {
 // Attention is something an operator should look at.
 type Attention struct {
 	Severity string `json:"severity" enum:"warn,bad"`
-	Kind     string `json:"kind" doc:"node-down, alarm, partition, health, maintenance, version-mismatch, queue-no-consumers, queue-state, queue-members-offline, endpoint"`
+	Kind     string `json:"kind" doc:"node-down, alarm, partition, health, maintenance, version-mismatch, deprecated-feature, queue-no-consumers, queue-state, queue-members-offline, endpoint"`
 	Subject  string `json:"subject"`
 	Message  string `json:"message"`
 }
@@ -349,14 +349,15 @@ func (q queueRaw) brief() QueueBrief {
 
 // pollResult collects the raw answers of one poll.
 type pollResult struct {
-	overview  *overviewRaw
-	nodes     []nodeRaw
-	queues    []queueRaw
-	endpoints []Endpoint
-	health    []HealthResult
-	checks    []string
-	prom      []*PromMetrics
-	promSum   []PromSummary
+	overview   *overviewRaw
+	nodes      []nodeRaw
+	queues     []queueRaw
+	endpoints  []Endpoint
+	health     []HealthResult
+	checks     []string
+	prom       []*PromMetrics
+	promSum    []PromSummary
+	deprecated []string
 }
 
 // promCounters maps a Rates field to the Prometheus counters summed for it.
@@ -573,6 +574,9 @@ func buildSnapshot(clusterID string, now time.Time, res pollResult, promRates *R
 		s.Info.Versions = append(s.Info.Versions, v)
 	}
 	sort.Strings(s.Info.Versions)
+	for _, f := range res.deprecated {
+		attn("warn", "deprecated-feature", f, "the deprecated feature "+f+" is in use; a future RabbitMQ version removes it")
+	}
 	if len(s.Info.Versions) > 1 {
 		attn("warn", "version-mismatch", s.Info.ClusterName, "nodes run different RabbitMQ versions: "+strings.Join(s.Info.Versions, ", "))
 	}

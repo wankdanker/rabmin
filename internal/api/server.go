@@ -74,6 +74,8 @@ func New(cfg Config, st *store.Store, mgr *rabbitx.Manager, ui fs.FS, log *slog.
 	s.registerUsers()
 	s.registerClusters()
 	s.registerMonitor()
+	s.registerObjects()
+	s.registerAdmin()
 	s.registerAudit()
 
 	mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, r *http.Request) {

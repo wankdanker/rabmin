@@ -36,20 +36,21 @@ type Manager struct {
 }
 
 type clusterState struct {
-	mu        sync.Mutex
-	cluster   store.Cluster
-	client    *Client
-	clientErr error
-	prom      *http.Client
-	snapshot  *Snapshot
-	history   []RatePoint
-	subs      map[chan *Snapshot]struct{}
-	cancel    context.CancelFunc
-	promPrev  *promTotals
-	health    []HealthResult
-	checks    []string
-	healthAt  time.Time
-	pollMu    sync.Mutex
+	mu         sync.Mutex
+	cluster    store.Cluster
+	client     *Client
+	clientErr  error
+	prom       *http.Client
+	snapshot   *Snapshot
+	history    []RatePoint
+	subs       map[chan *Snapshot]struct{}
+	cancel     context.CancelFunc
+	promPrev   *promTotals
+	health     []HealthResult
+	checks     []string
+	healthAt   time.Time
+	deprecated []string
+	pollMu     sync.Mutex
 }
 
 // HealthChecks are the node-local checks run through every management URL.
@@ -317,8 +318,18 @@ func (m *Manager) pollOnce(ctx context.Context, st *clusterState, forceHealth bo
 	if runHealth {
 		st.health, st.checks = m.runHealth(pctx, cl, res.endpoints, ov)
 		st.healthAt = now
+		var used []struct {
+			Name string `json:"name"`
+		}
+		// Absent before RabbitMQ 3.13; then nothing is reported.
+		if cl.Get(pctx, "/api/deprecated-features/used", &used) == nil {
+			st.deprecated = []string{}
+			for _, u := range used {
+				st.deprecated = append(st.deprecated, u.Name)
+			}
+		}
 	}
-	res.health, res.checks = st.health, st.checks
+	res.health, res.checks, res.deprecated = st.health, st.checks, st.deprecated
 
 	var promRates *Rates
 	if len(res.prom) > 0 {

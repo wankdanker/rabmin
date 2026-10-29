@@ -176,6 +176,52 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/clusters/{cluster}/bindings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List bindings
+         * @description Requires role: **viewer**.
+         */
+        get: operations["list-bindings"];
+        put?: never;
+        /**
+         * Bind an exchange to a queue or exchange
+         * @description Requires role: **operator**.
+         */
+        post: operations["create-binding"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/bindings/{vhost}/{source}/{destinationType}/{destination}/{propertiesKey}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Delete a binding
+         * @description propertiesKey is the binding's propertiesKey exactly as listed, URL-encoded as a path segment like the other parameters.
+         *
+         *     Requires role: **operator**.
+         */
+        delete: operations["delete-binding"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/clusters/{cluster}/channels": {
         parameters: {
             query?: never;
@@ -235,6 +281,32 @@ export interface paths {
          *     Requires role: **admin**.
          */
         put: operations["set-cluster-name"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/cluster-tags": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Cluster tags
+         * @description Requires role: **viewer**.
+         */
+        get: operations["get-cluster-tags"];
+        /**
+         * Replace the cluster tags
+         * @description Key/value tags stored in the cluster_tags global parameter and reported by /api/overview.
+         *
+         *     Requires role: **admin**.
+         */
+        put: operations["set-cluster-tags"];
         post?: never;
         delete?: never;
         options?: never;
@@ -384,6 +456,94 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/clusters/{cluster}/definitions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Export definitions
+         * @description The RabbitMQ definitions of the whole cluster, or of one vhost. Contains password hashes, so admin only.
+         *
+         *     Requires role: **admin**.
+         */
+        get: operations["export-definitions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/definitions/diff": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Compare definitions with the cluster
+         * @description Shows what importing a definitions file would do. Import never deletes (cluster-only objects stay) and skips exchanges and queues that exist with other properties (conflicts).
+         *
+         *     Requires role: **admin**.
+         */
+        post: operations["diff-definitions"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/definitions/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Import definitions
+         * @description Imports the added and changed objects of a definitions file, or only those whose change ids are listed in select. Conflicts and cluster-only objects are never touched.
+         *
+         *     Requires role: **admin**.
+         */
+        post: operations["import-definitions"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/deprecated-features": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List deprecated features
+         * @description Deprecated features with their phase and whether the cluster uses them now.
+         *
+         *     Requires role: **viewer**.
+         */
+        get: operations["list-deprecated-features"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/clusters/{cluster}/events": {
         parameters: {
             query?: never;
@@ -398,6 +558,192 @@ export interface paths {
         get: operations["stream-snapshots"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/exchanges": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List exchanges
+         * @description Rates are averages over the last 30 seconds.
+         *
+         *     Requires role: **viewer**.
+         */
+        get: operations["list-exchanges"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/exchanges/{vhost}/{name}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Exchange detail
+         * @description The exchange with its bindings as source and as destination.
+         *
+         *     Requires role: **viewer**.
+         */
+        get: operations["get-exchange"];
+        /**
+         * Declare an exchange
+         * @description Declaring an existing exchange with different properties fails.
+         *
+         *     Requires role: **operator**.
+         */
+        put: operations["put-exchange"];
+        post?: never;
+        /**
+         * Delete an exchange
+         * @description Requires role: **operator**.
+         */
+        delete: operations["delete-exchange"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/exchanges/{vhost}/{name}/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Publish a message
+         * @description Publishes one message through the management API and reports whether it was routed. Use amq.default to publish straight to a queue by name.
+         *
+         *     Requires role: **operator**.
+         */
+        post: operations["publish"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/feature-flags": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List feature flags
+         * @description Requires role: **viewer**.
+         */
+        get: operations["list-feature-flags"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/feature-flags/enable": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Enable feature flags
+         * @description Enables the named flags, or every disabled stable flag when names is empty. Feature flags cannot be disabled again. Experimental flags must be named explicitly.
+         *
+         *     Requires role: **admin**.
+         */
+        post: operations["enable-feature-flags"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/global-parameters": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List global parameters
+         * @description Requires role: **viewer**.
+         */
+        get: operations["list-global-parameters"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/global-parameters/{name}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set a global parameter
+         * @description cluster_name and internal_cluster_id are managed by RabbitMQ; use set-cluster-name to rename the cluster.
+         *
+         *     Requires role: **admin**.
+         */
+        put: operations["put-global-parameter"];
+        post?: never;
+        /**
+         * Delete a global parameter
+         * @description Requires role: **admin**.
+         */
+        delete: operations["delete-global-parameter"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/hash-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Hash a password
+         * @description Hashes a password with the cluster's configured algorithm, for definitions files.
+         *
+         *     Requires role: **admin**.
+         */
+        post: operations["hash-password"];
         delete?: never;
         options?: never;
         head?: never;
@@ -470,6 +816,290 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/clusters/{cluster}/operator-policies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List operator policys
+         * @description Requires role: **viewer**.
+         */
+        get: operations["list-operator-policys"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/operator-policies/{vhost}/{name}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Create or replace a operator policy
+         * @description RabbitMQ validates the definition and rejects unknown keys.
+         *
+         *     Requires role: **admin**.
+         */
+        put: operations["put-operator-policy"];
+        post?: never;
+        /**
+         * Delete a operator policy
+         * @description Requires role: **admin**.
+         */
+        delete: operations["delete-operator-policy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/parameters": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List vhost parameters
+         * @description Runtime parameters of every component (federation-upstream, shovel, vhost-limits, operator_policy...). Passwords in URIs are redacted.
+         *
+         *     Requires role: **viewer**.
+         */
+        get: operations["list-parameters"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/parameters/{component}/{vhost}/{name}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set a vhost parameter
+         * @description Requires role: **admin**.
+         */
+        put: operations["put-parameter"];
+        post?: never;
+        /**
+         * Delete a vhost parameter
+         * @description Requires role: **admin**.
+         */
+        delete: operations["delete-parameter"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/permissions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List permissions
+         * @description Requires role: **viewer**.
+         */
+        get: operations["list-permissions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/permissions/{vhost}/{user}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Grant permissions in a vhost
+         * @description Configure, write and read are regular expressions over resource names; an empty string grants nothing.
+         *
+         *     Requires role: **admin**.
+         */
+        put: operations["set-permission"];
+        post?: never;
+        /**
+         * Revoke permissions in a vhost
+         * @description Requires role: **admin**.
+         */
+        delete: operations["delete-permission"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/policies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List policys
+         * @description Requires role: **viewer**.
+         */
+        get: operations["list-policys"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/policies/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Preview what a policy matches
+         * @description Lists the queues and exchanges of a vhost that a pattern and apply-to match, and whether the policy would win against the other policies of the same kind given their priorities. Matching uses Go regular expressions, which agree with RabbitMQ's for common patterns.
+         *
+         *     Requires role: **viewer**.
+         */
+        post: operations["preview-policy"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/policies/{vhost}/{name}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Create or replace a policy
+         * @description RabbitMQ validates the definition and rejects unknown keys.
+         *
+         *     Requires role: **admin**.
+         */
+        put: operations["put-policy"];
+        post?: never;
+        /**
+         * Delete a policy
+         * @description Requires role: **admin**.
+         */
+        delete: operations["delete-policy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/queues": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List queues and streams
+         * @description Filter by name substring (q) or regular expression (regex), vhost, type, state and policy. Rates are averages over the last 30 seconds.
+         *
+         *     Requires role: **viewer**.
+         */
+        get: operations["list-queues"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/queues/{vhost}/{name}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Queue detail
+         * @description Features, effective policy, state, members, message counts and bytes, rates, consumers and bindings.
+         *
+         *     Requires role: **viewer**.
+         */
+        get: operations["get-queue"];
+        /**
+         * Declare a queue or stream
+         * @description Queues cannot be changed after they are declared: declaring an existing queue with other arguments fails (400 inequivalent arg). Use policies for changes.
+         *
+         *     Requires role: **operator**.
+         */
+        put: operations["put-queue"];
+        post?: never;
+        /**
+         * Delete a queue
+         * @description Deletes the queue and its messages. ifEmpty and ifUnused make RabbitMQ refuse (409) a queue with messages or consumers.
+         *
+         *     Requires role: **operator**.
+         */
+        delete: operations["delete-queue"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/queues/{vhost}/{name}/purge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Purge a queue
+         * @description Removes every ready message. Unacknowledged messages stay. Streams cannot be purged.
+         *
+         *     Requires role: **operator**.
+         */
+        post: operations["purge-queue"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/clusters/{cluster}/reset-stats": {
         parameters: {
             query?: never;
@@ -530,6 +1160,190 @@ export interface paths {
         get: operations["list-stream-connections"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/topic-permissions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List topic permissions
+         * @description Requires role: **viewer**.
+         */
+        get: operations["list-topic-permissions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/topic-permissions/{vhost}/{user}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set a topic permission
+         * @description Limits the routing keys a user may publish (write) or bind/consume (read) on one topic exchange.
+         *
+         *     Requires role: **admin**.
+         */
+        put: operations["set-topic-permission"];
+        post?: never;
+        /**
+         * Remove a topic permission
+         * @description Removes the permission for one exchange. RabbitMQ can only delete all of a user's topic permissions in a vhost, so rabmin deletes them and puts the others back; this is not atomic.
+         *
+         *     Requires role: **admin**.
+         */
+        delete: operations["delete-topic-permission"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List RabbitMQ users
+         * @description Users with tags, limits and the vhosts they have permissions in. Password hashes are never returned.
+         *
+         *     Requires role: **viewer**.
+         */
+        get: operations["list-rabbit-users"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/users/delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Delete RabbitMQ users
+         * @description Deletes one or more users with their permissions. Their open connections are closed by RabbitMQ.
+         *
+         *     Requires role: **admin**.
+         */
+        post: operations["delete-rabbit-users"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/users/{user}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Create or update a RabbitMQ user
+         * @description On an update without a password, the current password is kept: rabmin reads the user's hash from the definitions export and sends it back, because RabbitMQ removes the password of a user updated without one.
+         *
+         *     Requires role: **admin**.
+         */
+        put: operations["put-rabbit-user"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/vhosts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List virtual hosts
+         * @description Requires role: **viewer**.
+         */
+        get: operations["list-vhosts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/vhosts/{vhost}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Create or update a virtual host
+         * @description Creates the vhost or updates its description, tags and default queue type, then applies deletion protection and limits when given.
+         *
+         *     Requires role: **admin**.
+         */
+        put: operations["put-vhost"];
+        post?: never;
+        /**
+         * Delete a virtual host
+         * @description Deletes the vhost with every queue, exchange, binding, policy and permission in it. Refused (409) while deletion protection is on.
+         *
+         *     Requires role: **admin**.
+         */
+        delete: operations["delete-vhost"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/clusters/{cluster}/vhosts/{vhost}/start": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Start a virtual host on a node
+         * @description Starts or restarts the vhost on one node, for example after the virtual-hosts health check failed there.
+         *
+         *     Requires role: **admin**.
+         */
+        post: operations["start-vhost"];
         delete?: never;
         options?: never;
         head?: never;
@@ -693,7 +1507,7 @@ export interface components {
             resource: "memory" | "disk";
         };
         Attention: {
-            /** @description node-down, alarm, partition, health, maintenance, version-mismatch, queue-no-consumers, queue-state, queue-members-offline, endpoint */
+            /** @description node-down, alarm, partition, health, maintenance, version-mismatch, deprecated-feature, queue-no-consumers, queue-state, queue-members-offline, endpoint */
             kind: string;
             message: string;
             /** @enum {string} */
@@ -712,6 +1526,31 @@ export interface components {
             target: string;
             /** Format: date-time */
             time: string;
+        };
+        Binding: {
+            arguments: unknown;
+            destination: string;
+            /** @enum {string} */
+            destinationType: "queue" | "exchange";
+            /** @description Identifies the binding for deletion */
+            propertiesKey: string;
+            routingKey: string;
+            /** @description Empty for the default exchange */
+            source: string;
+            vhost: string;
+        };
+        BindingIn: {
+            /** @description Headers exchange matching uses x-match: all|any|all-with-x|any-with-x plus header values */
+            arguments?: {
+                [key: string]: unknown;
+            };
+            destination: string;
+            /** @enum {string} */
+            destinationType: "queue" | "exchange";
+            routingKey?: string;
+            /** @description Source exchange (the default exchange cannot be bound) */
+            source: string;
+            vhost: string;
         };
         "Change-passwordRequest": {
             current: string;
@@ -868,6 +1707,11 @@ export interface components {
             queues: number;
             ratesSource: string;
             versions: string[];
+        };
+        ClusterTagsBody: {
+            tags: {
+                [key: string]: string;
+            };
         };
         Connection: {
             authMechanism?: string;
@@ -1059,6 +1903,54 @@ export interface components {
             password: string;
             username: string;
         };
+        DefinitionChange: {
+            after?: unknown;
+            before?: unknown;
+            /**
+             * @description conflict: the object exists with other properties and import will not change it; cluster-only: import never deletes
+             * @enum {string}
+             */
+            change: "added" | "changed" | "conflict" | "unchanged" | "cluster-only";
+            fields: string[];
+            id: string;
+            /** @description vhosts, users, permissions, topic_permissions, policies, parameters, global_parameters, exchanges, queues or bindings */
+            kind: string;
+            name: string;
+            vhost?: string;
+        };
+        DefinitionsDiff: {
+            changes: components["schemas"]["DefinitionChange"][];
+            /** @description Number of changes by change type */
+            counts: {
+                [key: string]: number;
+            };
+        };
+        DefinitionsIn: {
+            /** @description A RabbitMQ definitions export (whole cluster, or one vhost when vhost is set) */
+            definitions: unknown;
+            /** @description Compare and import against this vhost; the file is a vhost export */
+            vhost?: string;
+        };
+        "Delete-rabbit-usersRequest": {
+            users: string[];
+        };
+        DeprecatedFeature: {
+            description: string;
+            docUrl?: string;
+            name: string;
+            /** @description permitted_by_default, denied_by_default, disconnected or removed */
+            phase: string;
+            providedBy?: string;
+            /** @description permitted or denied */
+            state: string;
+            used: boolean;
+        };
+        "Enable-feature-flagsRequest": {
+            names?: string[];
+        };
+        "Enable-feature-flagsResponse": {
+            enabled: string[];
+        };
         Endpoint: {
             error?: string;
             /** Format: int64 */
@@ -1108,6 +2000,65 @@ export interface components {
              */
             type?: string;
         };
+        Exchange: {
+            arguments: unknown;
+            autoDelete: boolean;
+            durable: boolean;
+            internal: boolean;
+            /** @description Empty for the default exchange, which paths address as amq.default */
+            name: string;
+            policy?: string;
+            /** Format: double */
+            rateIn: number;
+            /** Format: double */
+            rateOut: number;
+            type: string;
+            vhost: string;
+        };
+        ExchangeDetail: {
+            destination: components["schemas"]["Binding"][];
+            exchange: components["schemas"]["Exchange"];
+            raw: unknown;
+            source: components["schemas"]["Binding"][];
+        };
+        ExchangesPage: {
+            /**
+             * Format: int64
+             * @description Items matching the filters
+             */
+            filtered: number;
+            items: components["schemas"]["Exchange"][];
+            /** Format: int64 */
+            page: number;
+            /** Format: int64 */
+            pageSize: number;
+            /**
+             * Format: int64
+             * @description Items before filtering
+             */
+            total: number;
+        };
+        FeatureFlag: {
+            description: string;
+            docUrl?: string;
+            name: string;
+            providedBy?: string;
+            requireLevel?: string;
+            /** @description required, stable or experimental */
+            stability: string;
+            /** @description enabled, disabled or state_changing */
+            state: string;
+        };
+        GlobalParameter: {
+            name: string;
+            value: unknown;
+        };
+        "Hash-passwordRequest": {
+            password: string;
+        };
+        "Hash-passwordResponse": {
+            hash: string;
+        };
         HealthResult: {
             check: string;
             detail?: unknown;
@@ -1115,6 +2066,18 @@ export interface components {
             reason?: string;
             /** @enum {string} */
             status: "ok" | "failed" | "error";
+        };
+        "Import-definitionsRequest": {
+            /** @description A RabbitMQ definitions export (whole cluster, or one vhost when vhost is set) */
+            definitions: unknown;
+            /** @description Change ids from diff-definitions; empty imports every added and changed object */
+            select?: string[];
+            /** @description Compare and import against this vhost; the file is a vhost export */
+            vhost?: string;
+        };
+        "Import-definitionsResponse": {
+            /** Format: int64 */
+            imported: number;
         };
         Info: {
             clusterName: string;
@@ -1195,6 +2158,10 @@ export interface components {
             /** Format: int64 */
             uptimeMs: number;
         };
+        NodeState: {
+            node: string;
+            state: string;
+        };
         ObjectRate: {
             /** Format: double */
             count: number;
@@ -1203,11 +2170,174 @@ export interface components {
             rate: number;
             vhost: string;
         };
+        Parameter: {
+            component: string;
+            name: string;
+            /** @description Passwords in URIs are redacted */
+            value: unknown;
+            vhost: string;
+        };
+        Permission: {
+            configure: string;
+            read: string;
+            user: string;
+            vhost: string;
+            write: string;
+        };
+        Policy: {
+            /** @description all, queues, classic_queues, quorum_queues, streams or exchanges */
+            applyTo: string;
+            definition: unknown;
+            name: string;
+            operator: boolean;
+            pattern: string;
+            /** Format: int64 */
+            priority: number;
+            vhost: string;
+        };
+        PolicyIn: {
+            /** @enum {string} */
+            applyTo: "all" | "queues" | "classic_queues" | "quorum_queues" | "streams" | "exchanges";
+            /** @description Policy keys and values, e.g. {"max-length": 1000} */
+            definition: unknown;
+            /** @description Regular expression matched against queue or exchange names */
+            pattern: string;
+            /** Format: int64 */
+            priority: number;
+        };
+        PolicyMatch: {
+            current?: string;
+            /** @enum {string} */
+            kind: "queue" | "exchange";
+            name: string;
+            tie?: string;
+            type: string;
+            wins: boolean;
+        };
+        PolicyPreview: {
+            approximate: boolean;
+            matches: components["schemas"]["PolicyMatch"][];
+            note?: string;
+        };
+        "Preview-policyRequest": {
+            /** @enum {string} */
+            applyTo: "all" | "queues" | "classic_queues" | "quorum_queues" | "streams" | "exchanges";
+            /** @description The policy's name, so an existing policy of that name is replaced in the comparison */
+            name?: string;
+            operator?: boolean;
+            pattern: string;
+            /** Format: int64 */
+            priority: number;
+            vhost: string;
+        };
         PromSummary: {
             error?: string;
             node?: string;
             ok: boolean;
             url: string;
+        };
+        PublishIn: {
+            /** @description Publish as this credential profile instead of the management user */
+            credential?: string;
+            payload: string;
+            /**
+             * @description Defaults to string
+             * @enum {string}
+             */
+            payloadEncoding?: "string" | "base64";
+            properties?: components["schemas"]["PublishProps"];
+            routingKey?: string;
+        };
+        PublishOut: {
+            /** @description False when no binding matched; the message was dropped or went to an alternate exchange's queues only if one is configured */
+            routed: boolean;
+        };
+        PublishProps: {
+            appId?: string;
+            contentEncoding?: string;
+            contentType?: string;
+            correlationId?: string;
+            /**
+             * Format: int64
+             * @description 1 transient, 2 persistent
+             */
+            deliveryMode?: number;
+            /** @description Per-message TTL in milliseconds, as a string */
+            expiration?: string;
+            headers?: {
+                [key: string]: unknown;
+            };
+            messageId?: string;
+            /** Format: int64 */
+            priority?: number;
+            replyTo?: string;
+            /**
+             * Format: int64
+             * @description Unix seconds
+             */
+            timestamp?: number;
+            type?: string;
+            userId?: string;
+        };
+        "Put-exchangeRequest": {
+            /** @description For example alternate-exchange */
+            arguments?: {
+                [key: string]: unknown;
+            };
+            autoDelete?: boolean;
+            /** @description Defaults to true */
+            durable?: boolean;
+            internal?: boolean;
+            /** @description direct, fanout, topic, headers, or a plugin type from the cluster info */
+            type: string;
+        };
+        "Put-global-parameterRequest": {
+            value: unknown;
+        };
+        "Put-parameterRequest": {
+            value: unknown;
+        };
+        Queue: {
+            /** Format: double */
+            ackRate: number;
+            arguments: unknown;
+            autoDelete: boolean;
+            /**
+             * Format: double
+             * @description 0..1: how often the queue could deliver to consumers immediately
+             */
+            consumerCapacity: number;
+            /** Format: int64 */
+            consumers: number;
+            /** Format: double */
+            deliverRate: number;
+            /** Format: int64 */
+            deliveryLimit?: number;
+            durable: boolean;
+            exclusive: boolean;
+            leader?: string;
+            members: string[];
+            /** Format: double */
+            memory: number;
+            /** Format: double */
+            messageBytes: number;
+            /** Format: double */
+            messages: number;
+            name: string;
+            node?: string;
+            online: string[];
+            operatorPolicy?: string;
+            policy?: string;
+            /** Format: double */
+            publishRate: number;
+            /** Format: double */
+            ready: number;
+            state: string;
+            /** @description classic, quorum or stream */
+            type: string;
+            /** Format: double */
+            unacked: number;
+            vhost: string;
         };
         QueueBrief: {
             /** Format: int64 */
@@ -1230,6 +2360,84 @@ export interface components {
             /** Format: double */
             unacked: number;
             vhost: string;
+        };
+        QueueDetail: {
+            bindings: components["schemas"]["Binding"][];
+            /** Format: double */
+            bytesReady: number;
+            /** Format: double */
+            bytesUnacked: number;
+            consumers: components["schemas"]["Consumer"][];
+            /** @description Policy and operator policy keys in effect */
+            effectivePolicy: unknown;
+            /** Format: double */
+            messagesPersistent: number;
+            /** Format: double */
+            messagesRam: number;
+            queue: components["schemas"]["Queue"];
+            raw: unknown;
+        };
+        QueueIn: {
+            /** @description x-arguments other than x-queue-type */
+            arguments?: {
+                [key: string]: unknown;
+            };
+            autoDelete?: boolean;
+            /** @description Defaults to true. RabbitMQ 4.x refuses non-durable, non-exclusive queues unless the deprecated transient_nonexcl_queues feature is permitted. */
+            durable?: boolean;
+            /** @description Node for a classic queue, or the leader of a quorum queue or stream */
+            node?: string;
+            /** @enum {string} */
+            type: "classic" | "quorum" | "stream";
+        };
+        QueuesPage: {
+            /**
+             * Format: int64
+             * @description Items matching the filters
+             */
+            filtered: number;
+            items: components["schemas"]["Queue"][];
+            /** Format: int64 */
+            page: number;
+            /** Format: int64 */
+            pageSize: number;
+            /**
+             * Format: int64
+             * @description Items before filtering
+             */
+            total: number;
+        };
+        RabbitUser: {
+            hasPassword: boolean;
+            hashingAlgorithm?: string;
+            /** Format: int64 */
+            maxChannels?: number;
+            /** Format: int64 */
+            maxConnections?: number;
+            name: string;
+            tags: string[];
+            vhosts: string[];
+        };
+        RabbitUserIn: {
+            /** @description With passwordHash, e.g. rabbit_password_hashing_sha256 */
+            hashingAlgorithm?: string;
+            /**
+             * Format: int64
+             * @description -1 removes the limit
+             */
+            maxChannels?: number;
+            /**
+             * Format: int64
+             * @description -1 removes the limit
+             */
+            maxConnections?: number;
+            /** @description Create the user without a password (certificate or OAuth2 login only) */
+            noPassword?: boolean;
+            password?: string;
+            /** @description A hash from POST /api/auth/hash_password or another cluster's definitions */
+            passwordHash?: string;
+            /** @description administrator, monitoring, policymaker, management, impersonator, or custom tags */
+            tags: string[];
         };
         RatePoint: {
             /** Format: double */
@@ -1327,6 +2535,16 @@ export interface components {
         "Set-cluster-nameRequest": {
             name: string;
         };
+        "Set-permissionRequest": {
+            configure: string;
+            read: string;
+            write: string;
+        };
+        "Set-topic-permissionRequest": {
+            exchange: string;
+            read: string;
+            write: string;
+        };
         Snapshot: {
             alarms: components["schemas"]["Alarm"][];
             attention: components["schemas"]["Attention"][];
@@ -1349,6 +2567,9 @@ export interface components {
             /** Format: date-time */
             time: string;
             totals: components["schemas"]["Totals"];
+        };
+        "Start-vhostRequest": {
+            node: string;
         };
         StatusBody: {
             authenticated: boolean;
@@ -1445,6 +2666,13 @@ export interface components {
             user?: string;
             warnings: string[];
         };
+        TopicPermission: {
+            exchange: string;
+            read: string;
+            user: string;
+            vhost: string;
+            write: string;
+        };
         Totals: {
             /** Format: int64 */
             channels: number;
@@ -1481,6 +2709,58 @@ export interface components {
             id: number;
             role: string;
             username: string;
+        };
+        VHost: {
+            defaultQueueType: string;
+            /** Format: double */
+            deliverRate: number;
+            description: string;
+            /**
+             * Format: int64
+             * @description Limit; absent when unlimited
+             */
+            maxConnections?: number;
+            /**
+             * Format: int64
+             * @description Limit; absent when unlimited
+             */
+            maxQueues?: number;
+            /** Format: double */
+            messages: number;
+            name: string;
+            /** @description Whether the vhost runs on each node */
+            nodeStates: components["schemas"]["NodeState"][];
+            /** @description Deletion protection */
+            protected: boolean;
+            /** Format: double */
+            publishRate: number;
+            /** Format: double */
+            ready: number;
+            tags: string[];
+            tracing: boolean;
+            /** Format: double */
+            unacked: number;
+        };
+        VHostIn: {
+            /**
+             * @description Queue type for declarations that do not name one
+             * @enum {string}
+             */
+            defaultQueueType?: "classic" | "quorum" | "stream";
+            description?: string;
+            /**
+             * Format: int64
+             * @description -1 removes the limit
+             */
+            maxConnections?: number;
+            /**
+             * Format: int64
+             * @description -1 removes the limit
+             */
+            maxQueues?: number;
+            /** @description Deletion protection */
+            protected?: boolean;
+            tags?: string[];
         };
         WebContext: {
             description: string;
@@ -1853,6 +3133,110 @@ export interface operations {
             };
         };
     };
+    "list-bindings": {
+        parameters: {
+            query?: {
+                vhost?: string;
+                source?: string;
+                destination?: string;
+            };
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Binding"][];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "create-binding": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BindingIn"];
+            };
+        };
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "delete-binding": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                cluster: string;
+                vhost: string;
+                source: string;
+                destinationType: "queue" | "exchange";
+                destination: string;
+                propertiesKey: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
     "list-channels": {
         parameters: {
             query?: {
@@ -1943,6 +3327,72 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["Set-cluster-nameRequest"];
+            };
+        };
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "get-cluster-tags": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClusterTagsBody"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "set-cluster-tags": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ClusterTagsBody"];
             };
         };
         responses: {
@@ -2296,6 +3746,145 @@ export interface operations {
             };
         };
     };
+    "export-definitions": {
+        parameters: {
+            query?: {
+                vhost?: string;
+            };
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    "Content-Disposition"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "diff-definitions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DefinitionsIn"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DefinitionsDiff"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "import-definitions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Import-definitionsRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Import-definitionsResponse"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "list-deprecated-features": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeprecatedFeature"][];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
     "stream-snapshots": {
         parameters: {
             query?: never;
@@ -2326,6 +3915,403 @@ export interface operations {
                         /** @description The retry time in milliseconds. */
                         retry?: number;
                     }[];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "list-exchanges": {
+        parameters: {
+            query?: {
+                /** @description Case-insensitive substring matched against names, client name, user, vhost and node */
+                q?: string;
+                vhost?: string;
+                user?: string;
+                node?: string;
+                /** @description Field to sort by (a JSON field name of the items) */
+                sort?: string;
+                desc?: boolean;
+                page?: number;
+                pageSize?: number;
+                type?: string;
+                /** @description Include amq.* and internal exchanges */
+                internal?: boolean;
+            };
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExchangesPage"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "get-exchange": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+                /** @description Virtual host (URL-encoded; / is %2F) */
+                vhost: string;
+                /** @description Name (URL-encoded); the default exchange is amq.default */
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExchangeDetail"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "put-exchange": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+                /** @description Virtual host (URL-encoded; / is %2F) */
+                vhost: string;
+                /** @description Name (URL-encoded); the default exchange is amq.default */
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Put-exchangeRequest"];
+            };
+        };
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "delete-exchange": {
+        parameters: {
+            query?: {
+                /** @description Refuse (409) when the exchange has bindings */
+                ifUnused?: boolean;
+            };
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+                /** @description Virtual host (URL-encoded; / is %2F) */
+                vhost: string;
+                /** @description Name (URL-encoded); the default exchange is amq.default */
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    publish: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+                /** @description Virtual host (URL-encoded; / is %2F) */
+                vhost: string;
+                /** @description Name (URL-encoded); the default exchange is amq.default */
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PublishIn"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublishOut"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "list-feature-flags": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeatureFlag"][];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "enable-feature-flags": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Enable-feature-flagsRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Enable-feature-flagsResponse"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "list-global-parameters": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GlobalParameter"][];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "put-global-parameter": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                cluster: string;
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Put-global-parameterRequest"];
+            };
+        };
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "delete-global-parameter": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                cluster: string;
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "hash-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Hash-passwordRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Hash-passwordResponse"];
                 };
             };
             /** @description Error */
@@ -2414,6 +4400,654 @@ export interface operations {
                 cluster: string;
                 /** @description Erlang node name, e.g. rabbit@host */
                 node: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "list-operator-policys": {
+        parameters: {
+            query?: {
+                vhost?: string;
+            };
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Policy"][];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "put-operator-policy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+                /** @description Virtual host (URL-encoded; / is %2F) */
+                vhost: string;
+                /** @description Name (URL-encoded); the default exchange is amq.default */
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PolicyIn"];
+            };
+        };
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "delete-operator-policy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+                /** @description Virtual host (URL-encoded; / is %2F) */
+                vhost: string;
+                /** @description Name (URL-encoded); the default exchange is amq.default */
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "list-parameters": {
+        parameters: {
+            query?: {
+                component?: string;
+                vhost?: string;
+            };
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Parameter"][];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "put-parameter": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                cluster: string;
+                component: string;
+                vhost: string;
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Put-parameterRequest"];
+            };
+        };
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "delete-parameter": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                cluster: string;
+                component: string;
+                vhost: string;
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "list-permissions": {
+        parameters: {
+            query?: {
+                vhost?: string;
+                user?: string;
+            };
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Permission"][];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "set-permission": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                cluster: string;
+                vhost: string;
+                user: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Set-permissionRequest"];
+            };
+        };
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "delete-permission": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                cluster: string;
+                vhost: string;
+                user: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "list-policys": {
+        parameters: {
+            query?: {
+                vhost?: string;
+            };
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Policy"][];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "preview-policy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Preview-policyRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PolicyPreview"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "put-policy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+                /** @description Virtual host (URL-encoded; / is %2F) */
+                vhost: string;
+                /** @description Name (URL-encoded); the default exchange is amq.default */
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PolicyIn"];
+            };
+        };
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "delete-policy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+                /** @description Virtual host (URL-encoded; / is %2F) */
+                vhost: string;
+                /** @description Name (URL-encoded); the default exchange is amq.default */
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "list-queues": {
+        parameters: {
+            query?: {
+                /** @description Case-insensitive substring matched against names, client name, user, vhost and node */
+                q?: string;
+                vhost?: string;
+                user?: string;
+                node?: string;
+                /** @description Field to sort by (a JSON field name of the items) */
+                sort?: string;
+                desc?: boolean;
+                page?: number;
+                pageSize?: number;
+                /** @description Regular expression matched against the queue name */
+                regex?: string;
+                /** @description classic, quorum or stream */
+                type?: string;
+                /** @description running, idle, down, crashed, minority... */
+                state?: string;
+                /** @description Policy or operator policy name; - for queues without a policy */
+                policy?: string;
+            };
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueuesPage"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "get-queue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+                /** @description Virtual host (URL-encoded; / is %2F) */
+                vhost: string;
+                /** @description Name (URL-encoded); the default exchange is amq.default */
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueueDetail"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "put-queue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+                /** @description Virtual host (URL-encoded; / is %2F) */
+                vhost: string;
+                /** @description Name (URL-encoded); the default exchange is amq.default */
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["QueueIn"];
+            };
+        };
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "delete-queue": {
+        parameters: {
+            query?: {
+                ifEmpty?: boolean;
+                ifUnused?: boolean;
+            };
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+                /** @description Virtual host (URL-encoded; / is %2F) */
+                vhost: string;
+                /** @description Name (URL-encoded); the default exchange is amq.default */
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "purge-queue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+                /** @description Virtual host (URL-encoded; / is %2F) */
+                vhost: string;
+                /** @description Name (URL-encoded); the default exchange is amq.default */
+                name: string;
             };
             cookie?: never;
         };
@@ -2533,6 +5167,354 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["StreamConnectionsPage"];
                 };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "list-topic-permissions": {
+        parameters: {
+            query?: {
+                vhost?: string;
+                user?: string;
+            };
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TopicPermission"][];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "set-topic-permission": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                cluster: string;
+                vhost: string;
+                user: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Set-topic-permissionRequest"];
+            };
+        };
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "delete-topic-permission": {
+        parameters: {
+            query: {
+                exchange: string;
+            };
+            header?: never;
+            path: {
+                cluster: string;
+                vhost: string;
+                user: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "list-rabbit-users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RabbitUser"][];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "delete-rabbit-users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Delete-rabbit-usersRequest"];
+            };
+        };
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "put-rabbit-user": {
+        parameters: {
+            query?: {
+                /** @description Fail with 409 if the user exists */
+                create?: boolean;
+            };
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+                /** @description RabbitMQ user name (URL-encoded) */
+                user: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RabbitUserIn"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RabbitUser"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "list-vhosts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VHost"][];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "put-vhost": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+                /** @description Virtual host (URL-encoded; / is %2F) */
+                vhost: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VHostIn"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VHost"];
+                };
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "delete-vhost": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+                /** @description Virtual host (URL-encoded; / is %2F) */
+                vhost: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Error */
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ErrorModel"];
+                };
+            };
+        };
+    };
+    "start-vhost": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Cluster id */
+                cluster: string;
+                /** @description Virtual host (URL-encoded; / is %2F) */
+                vhost: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Start-vhostRequest"];
+            };
+        };
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Error */
             default: {

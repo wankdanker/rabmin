@@ -1,6 +1,7 @@
 package rabbitx
 
 import (
+	"encoding/json"
 	"strings"
 	"testing"
 	"time"
@@ -69,5 +70,69 @@ func TestAtLeast(t *testing.T) {
 		if AtLeast(v, 3, 13) != want {
 			t.Errorf("AtLeast(%q, 3, 13) != %v", v, want)
 		}
+	}
+}
+
+func TestErlangText(t *testing.T) {
+	var v any
+	_ = json.Unmarshal([]byte(`["invalid_regexp",[40],[[109,105,115,115,105,110,103],1]]`), &v)
+	if got := erlangText(v); got != "invalid_regexp ( missing 1" {
+		t.Fatalf("got %q", got)
+	}
+	if got := erlangText("plain reason "); got != "plain reason" {
+		t.Fatalf("got %q", got)
+	}
+}
+
+func TestRedactURIs(t *testing.T) {
+	in := json.RawMessage(`{"uri":"amqp://user:p%40ss@host:5672/vh","other":"amqps://u:x@h","plain":"amqp://host"}`)
+	got := string(RedactURIs(in))
+	if strings.Contains(got, "p%40ss") || !strings.Contains(got, "amqp://user:***@host") || !strings.Contains(got, "amqps://u:***@h") || !strings.Contains(got, `"amqp://host"`) {
+		t.Fatalf("got %s", got)
+	}
+}
+
+func TestDiffDefinitions(t *testing.T) {
+	cluster := []byte(`{
+		"users":[{"name":"a","password_hash":"HASH","hashing_algorithm":"x","tags":["administrator"],"limits":{}}],
+		"global_parameters":[{"name":"internal_cluster_id","value":"one"},{"name":"cluster_tags","value":[]}],
+		"queues":[{"name":"q","vhost":"v","durable":true,"auto_delete":false,"arguments":{"x-queue-type":"quorum"}},
+		          {"name":"old","vhost":"v","durable":true,"auto_delete":false,"arguments":{}}],
+		"bindings":[{"source":"e","vhost":"v","destination":"q","destination_type":"queue","routing_key":"k","arguments":{}}]}`)
+	file := []byte(`{
+		"users":[{"name":"a","password_hash":"HASH","hashing_algorithm":"x","tags":"administrator","limits":{}}],
+		"global_parameters":[{"name":"internal_cluster_id","value":"two"},{"name":"cluster_tags","value":{"env":"prod"}}],
+		"queues":[{"name":"q","vhost":"v","durable":true,"auto_delete":false,"arguments":{"x-queue-type":"classic"}},
+		          {"name":"new","vhost":"v","durable":true,"auto_delete":false,"arguments":[]}],
+		"bindings":[{"source":"e","vhost":"v","destination":"q","destination_type":"queue","routing_key":"k","arguments":[]}]}`)
+	d, err := DiffDefinitions(cluster, file, "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := map[string]string{}
+	for _, c := range d.Changes {
+		got[c.Kind+"/"+c.Name] = c.Change
+		if strings.Contains(string(c.Before)+string(c.After), "HASH") {
+			t.Fatal("password hash not masked")
+		}
+	}
+	want := map[string]string{"users/a": "unchanged", "global_parameters/cluster_tags": "changed", "queues/q": "conflict",
+		"queues/new": "added", "queues/old": "cluster-only"}
+	for k, v := range want {
+		if got[k] != v {
+			t.Errorf("%s: want %s, got %s (all: %v)", k, v, got[k], got)
+		}
+	}
+	if _, ok := got["global_parameters/internal_cluster_id"]; ok {
+		t.Error("internal_cluster_id must never be imported")
+	}
+	for k, v := range got {
+		if strings.HasPrefix(k, "bindings/") && v != "unchanged" {
+			t.Errorf("binding with [] arguments should equal {}: %s %s", k, v)
+		}
+	}
+	doc, n, err := SelectDefinitions(d, file, "", nil)
+	if err != nil || n != 2 || strings.Contains(string(doc), `"classic"`) {
+		t.Fatalf("select: n=%d err=%v doc=%s", n, err, doc)
 	}
 }
