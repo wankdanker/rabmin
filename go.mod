@@ -5,6 +5,7 @@ go 1.26.0
 require (
 	github.com/danielgtaylor/huma/v2 v2.40.0
 	github.com/rabbitmq/amqp091-go v1.16.0
+	github.com/wankdanker/clyops/packages/go v0.9.0
 	golang.org/x/crypto v0.58.0
 	modernc.org/sqlite v1.61.0
 )

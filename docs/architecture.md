@@ -18,7 +18,7 @@ browser ──HTTP/SSE──▶ rabmin (one Go binary)
 
 | Path | |
 |---|---|
-| `cmd/rabmin` | The server. Flags/env, admin bootstrap, `rabmin openapi`. |
+| `cmd/rabmin` | The server. Command line (clyops, with environment fallback), admin bootstrap, `rabmin openapi`. |
 | `cmd/rabmin-devcluster` | RabbitMQ clusters in Docker for development, with optional demo topology and traffic. |
 | `internal/api` | HTTP API. One file per area; every route is registered with `reg()` so it gets a role requirement, OpenAPI docs and auditing. |
 | `internal/rabbitx` | RabbitMQ side: the management API client, Prometheus parsing, the poller and snapshots. |
