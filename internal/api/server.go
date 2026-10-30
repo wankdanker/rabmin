@@ -52,7 +52,7 @@ func New(cfg Config, st *store.Store, mgr *rabbitx.Manager, ui fs.FS, log *slog.
 	}
 	s := &Server{cfg: cfg, store: st, mgr: mgr, log: log, limiter: newLoginLimiter()}
 
-	mux := http.NewServeMux()
+	mux := newSlashMux()
 	hcfg := huma.DefaultConfig("rabmin", version.Version)
 	hcfg.CreateHooks = nil
 	hcfg.OpenAPIPath = "/openapi"

@@ -146,6 +146,17 @@ func TestObjectsAndAdmin(t *testing.T) {
 	op.must("POST", c+"/queues/app/audit/purge", nil, nil, 400)
 	op.must("DELETE", c+"/queues/app/orders.all?ifEmpty=true", nil, nil, 204)
 
+	// The default vhost "/" travels as a lone %2F segment, which ServeMux alone cannot route.
+	op.must("PUT", c+"/queues/%2F/root.q", map[string]any{"type": "classic"}, nil, 204)
+	var rq rabbitx.QueueDetail
+	admin.must("GET", c+"/queues/%2F/root.q", nil, &rq, 200)
+	if rq.Queue.VHost != "/" || rq.Queue.Name != "root.q" {
+		t.Fatalf("root vhost queue: %+v", rq.Queue)
+	}
+	admin.must("GET", c+"/exchanges/%2F/amq.direct", nil, nil, 200)
+	op.must("POST", c+"/queues/%2F/root.q/purge", nil, nil, 204)
+	op.must("DELETE", c+"/queues/%2F/root.q", nil, nil, 204)
+
 	var binds []rabbitx.Binding
 	admin.must("GET", c+"/bindings?vhost=app&source=routing", nil, &binds, 200)
 	if len(binds) != 1 {
