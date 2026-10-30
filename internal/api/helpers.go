@@ -121,7 +121,8 @@ func (s *Server) authMiddleware(ctx huma.Context, next func(huma.Context)) {
 	noAudit, _ := op.Metadata["noAudit"].(bool)
 	if op.Method != http.MethodGet && !noAudit && need != "" {
 		status := ctx.Status()
-		e := store.AuditEntry{Actor: actor(ctx.Context()), Action: op.OperationID, Target: ctx.URL().Path,
+		u := ctx.URL()
+		e := store.AuditEntry{Actor: actor(ctx.Context()), Action: op.OperationID, Target: u.EscapedPath(),
 			OK: status < 400, Remote: remote}
 		if status >= 400 {
 			e.Error = http.StatusText(status)

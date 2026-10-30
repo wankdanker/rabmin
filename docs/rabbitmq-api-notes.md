@@ -71,6 +71,7 @@ Success is `200 {"status":"ok"}`; failure is `503 {"status":"failed","reason":..
 
 ## Virtual hosts
 
+- The default vhost `/` is sent as `%2F`, to RabbitMQ and to rabmin's own API. Go's `http.ServeMux` (not RabbitMQ) cannot route a path segment that is exactly `%2F`: it unescapes the segment and refuses to match `/` to a wildcard, so the request gets a plain 404. rabmin's router swaps such segments for a placeholder before routing (`internal/api/slashmux.go`).
 - `PUT /api/vhosts/{name}` on an existing vhost updates `description`, `tags` and `default_queue_type` in place. `tags` accepts a comma-separated string or an array.
 - `GET` returns `protected_from_deletion`; protection is toggled with `POST`/`DELETE /api/vhosts/{name}/deletion/protection`.
 - On a 3-node cluster, a `GET /api/vhost-limits` right after changing a limit (or a vhost's protection) can still return the old value for a moment. rabmin's vhost update waits for its own change to show before answering.
